@@ -2,14 +2,65 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "clean": "bun run ./scripts/clean.ts",
+    "commit": "git-cz",
+    "postinstall": "bun prepare:husky && bun prepare:nuxt",
+    "timeout": "node -e \"require('node:timers/promises').setTimeout(5_000)\"",
+    "lint": "bun lint:ts",
+    "lint:fix": "bun lint:ts --fix",
+    "lint:ts": "eslint --ext \".js,.ts,.vue\" .",
+    "mkcert:install": "bun run ./scripts/mkcert.ts --install",
+    "mkcert:uninstall": "bun run ./scripts/mkcert.ts --uninstall",
+    "mkcert:create-ca": "cross-env CAROOT=.dev/mkcert/ca bun run ./scripts/mkcert.ts --create-ca",
+    "mkcert:create-certs": "cross-env CAROOT=.dev/mkcert/ca bun run ./scripts/mkcert.ts --create-certs",
+    "nuxt:analyze": "nuxt analyze",
+    "nuxt:build": "nuxt build",
+    "nuxt:dev": " nuxt dev --dotenv .env.dev",
+    "nuxt:generate": "nuxt generate",
+    "nuxt:info": "nuxt info",
+    "nuxt:preview": "nuxt preview",
+    "prepare:husky": "husky install",
+    "prepare:ssl": "bun mkcert:install && bun mkcert:create-ca && bun mkcert:create-certs",
+    "prepare:nuxt": "nuxt prepare",
+    "stripe:install": "bun run ./scripts/stripe.ts --install",
+    "stripe:webhooks": "bun run ./scripts/stripe.ts --start-webhooks",
+    "supabase:start": "bunx supabase start",
+    "supabase:stop": "bunx supabase stop",
+    "supabase:restart": "bun supabase:stop && bun timeout && bun supabase:start",
+    "supabase:reset": "bunx supabase db reset",
+    "supabase:functions:serve": "bunx supabase functions serve",
+    "supabase:types": "bunx supabase gen types typescript --local > types/supabase.d.ts",
+    "supabase:inbucket": "start http://localhost:54324",
+    "supabase:studio": "start http://localhost:54323",
+    "update:deps": "bunx taze -I"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
-    "nuxt": "^3.7.4"
+    "@nuxtjs/eslint-config-typescript": "^12.1.0",
+    "@types/adm-zip": "^0.5.2",
+    "@typescript-eslint/eslint-plugin": "^6.7.5",
+    "@typescript-eslint/parser": "^6.7.5",
+    "adm-zip": "^0.5.10",
+    "commitizen": "^4.3.0",
+    "consola": "^3.2.3",
+    "cross-env": "^7.0.3",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.51.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "eslint-plugin-vue": "^9.17.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
+    "nuxt": "^3.7.4",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,vue}": "eslint --cache --cache-location .eslintcache --fix"
   }
 }

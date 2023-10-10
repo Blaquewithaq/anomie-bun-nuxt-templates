@@ -17,11 +17,15 @@ logs
 .DS_Store
 .fleet
 .idea
+bun.lockb
 
 # Local env files
 .env
 .env.*
 !.env.example
+
+# Cached
+.eslintcache
 
 # Docs
 docs/private
