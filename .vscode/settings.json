@@ -1,0 +1,50 @@
+{
+  // Code Formatting
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "javascript.format.enable": false,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": false,
+  "prettier.enable": false,
+  // ESLint
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.fixAll.tslint": true
+  },
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "eslint.experimental.useFlatConfig": true,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "html",
+    "markdown",
+    "json",
+    "jsonc",
+    "yaml"
+  ],
+  // File Associations
+  "files.associations": {
+    "*.css": "postcss"
+  },
+  // Prisma
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  // Window Settings
+  "window.zoomLevel": 0.0,
+  // Indent Rainbow Colors
+  "indentRainbow.colors": [
+    "rgba(255, 210, 0, 0.08)",
+    "rgba(255, 0, 247, 0.08)",
+    "rgba(0, 215, 255, 0.08)"
+    // "rgba(199, 255, 0, 0.08)"
+  ]
+}
