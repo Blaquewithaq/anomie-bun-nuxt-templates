@@ -8,7 +8,7 @@
     "timeout": "node -e \"require('node:timers/promises').setTimeout(5_000)\"",
     "lint": "bun lint:ts",
     "lint:fix": "bun lint:ts --fix",
-    "lint:ts": "eslint --ext \".js,.ts,.vue\" .",
+    "lint:ts": "eslint --ext .js,.ts,.vue .",
     "mkcert:install": "bun run ./scripts/mkcert.ts --install",
     "mkcert:uninstall": "bun run ./scripts/mkcert.ts --uninstall",
     "mkcert:create-ca": "cross-env CAROOT=.dev/mkcert/ca bun run ./scripts/mkcert.ts --create-ca",
