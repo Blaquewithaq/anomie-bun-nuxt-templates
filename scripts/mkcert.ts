@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 import * as fs from "fs";
 import * as os from "os";
-import { exec } from "child_process";
+import { exec, execSync } from "child_process";
 import fetch from "node-fetch";
 import chalk from "chalk";
 import ora from "ora";
@@ -18,6 +18,11 @@ const env = {
 
 if (!fs.existsSync(devDir)) {
   fs.mkdirSync(devDir);
+}
+
+// If linux then sudo
+if (os.platform() === "linux") {
+  execSync("sudo echo 'sudo enabled'");
 }
 
 // -----------------------------------
@@ -336,6 +341,13 @@ async function createCerts() {
   });
 }
 
+// Install and create certificates
+async function installAndCreateCerts() {
+  await install();
+  await createLocalCA();
+  await createCerts();
+}
+
 // > MAIN ENTRY POINT
 if (process.argv.length > 2) {
   switch (process.argv[2]) {
@@ -350,6 +362,9 @@ if (process.argv.length > 2) {
       break;
     case "--create-certs":
       await createCerts();
+      break;
+    case "--install-and-create-certs":
+      await installAndCreateCerts();
       break;
     default:
       console.log("Invalid argument");

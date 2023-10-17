@@ -1,7 +1,6 @@
 import { exec } from "child_process";
 import { promisify } from "util";
 import chalk from "chalk";
-import { consola } from "consola";
 import ora from "ora";
 import { rimraf } from "rimraf";
 
@@ -18,28 +17,25 @@ const files: string[] = [".eslintcache"];
 
 // Clean directories and files
 async function clean() {
-  consola.start(chalk.yellow("Cleaning..."));
-  let spinner = ora("directories: cleaning...").start();
   await rimraf(directories, {});
-  spinner.succeed("directories: " + chalk.green("cleaned"));
-
-  spinner = ora("files: cleaning...").start();
   await rimraf(files, {});
-  spinner.succeed("files: " + chalk.green("cleaned"));
 }
 
 // Prepare
 async function prepare() {
-  const spinner = ora("preparing...").start();
   const execAsync = promisify(exec);
-
   await execAsync("bun install");
-
-  spinner.succeed(chalk.green("done"));
 }
 
 // Run
 (async () => {
+  const spinner = ora().start();
+  spinner.color = "magenta";
+  spinner.spinner = "aesthetic";
+  spinner.text = chalk.yellow(" Cleaning...");
+
   await clean();
   await prepare();
+
+  spinner.succeed(chalk.green("Cleaned"));
 })();
