@@ -46,5 +46,22 @@
     "rgba(255, 0, 247, 0.08)",
     "rgba(0, 215, 255, 0.08)"
     // "rgba(199, 255, 0, 0.08)"
-  ]
+  ],
+  // Nuxtr
+  "vueFiles.template.defaultLanguage": "html",
+  "nuxtr.vueFiles.firstTag": "template",
+  "nuxtr.vueFiles.script.type": "setup",
+  "nuxtr.vueFiles.script.defaultLanguage": "ts",
+  "nuxtr.vueFiles.style.addStyleTag": false,
+  "nuxtr.vueFiles.style.alwaysScoped": true,
+  "nuxtr.vueFiles.style.defaultLanguage": "scss",
+  "nuxtr.openItemsAfterCreation": true,
+  "nuxtr.defaultPackageManager": "Bun",
+  "nuxtr.intellisense.nuxtrc": true,
+  "nuxtr.intellisense.vueFiles": true,
+  "nuxtr.intellisense.nuxtignore": true,
+  "nuxtr.snippets.nuxt": true,
+  "nuxtr.snippets.nitro": true,
+  "nuxtr.vueFiles.pages.defaultTemplate": "default.page-template",
+  "nuxtr.vueFiles.layouts.defaultTemplate": "default.layout-template"
 }
