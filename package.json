@@ -35,6 +35,10 @@
     "supabase:inbucket": "start http://localhost:54324",
     "supabase:studio": "start http://localhost:54323"
   },
+  "dependencies": {
+    "nuxt-prepare": "^0.2.1",
+    "zod": "^3.22.4"
+  },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",

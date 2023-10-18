@@ -22,7 +22,10 @@ export default defineNuxtConfig({
     renderJsonPayloads: true,
     typedPages: true,
   },
-  modules: [],
+  modules: [
+    // https://nuxt-prepare.byjohann.dev/guide/getting-started.html
+    "nuxt-prepare",
+  ],
   runtimeConfig: {
     private: {},
     public: {},
@@ -36,4 +39,7 @@ export default defineNuxtConfig({
 
   // Modules
   devtools: { enabled: process.env.NODE_ENV === "development" },
+  prepareKit: {
+    scripts: ["server/prepare/process.ts", "server/prepare/server.ts"],
+  },
 });
