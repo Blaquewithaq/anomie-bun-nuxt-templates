@@ -22,8 +22,16 @@
     "nuxt:info": "nuxt info",
     "nuxt:preview": "nuxt preview",
     "prepare:husky": "husky install",
+    "prepare:prisma": "prisma generate",
     "prepare:ssl": "bun mkcert:install && bun mkcert:create-ca && bun mkcert:create-certs",
     "prepare:nuxt": "nuxt prepare",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:seed": "prisma db seed",
+    "prisma:pull": "prisma db pull",
+    "prisma:push": "prisma db push",
+    "prisma:reset": "prisma migrate reset",
+    "prisma:validate": "prisma validate",
+    "prisma:studio": "prisma studio",
     "stripe:install": "bun run ./scripts/stripe.ts --install",
     "stripe:webhooks": "bun run ./scripts/stripe.ts --start-webhooks",
     "supabase:start": "bunx supabase start",
@@ -42,12 +50,14 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
+    "@prisma/client": "^5.4.2",
     "@types/adm-zip": "^0.5.3",
     "@types/node-fetch": "^2.6.6",
     "@types/rimraf": "^4.0.5",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "@typescript-eslint/parser": "^6.8.0",
     "adm-zip": "^0.5.10",
+    "bun-types": "^1.0.6",
     "chalk": "^5.3.0",
     "commitizen": "^4.3.0",
     "cross-env": "^7.0.3",
@@ -61,9 +71,13 @@
     "nuxt": "^3.7.4",
     "ora": "^7.0.1",
     "prettier": "^3.0.3",
+    "prisma": "^5.4.2",
     "rimraf": "^5.0.5",
     "typescript": "^5.2.2"
   },
+  "trustedDependencies": [
+    "prisma"
+  ],
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
@@ -71,5 +85,9 @@
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --cache --cache-location .eslintcache --fix"
+  },
+  "prisma": {
+    "schema": "server/database/schema.prisma",
+    "seed": "bun run ./server/database/seed.ts"
   }
 }
