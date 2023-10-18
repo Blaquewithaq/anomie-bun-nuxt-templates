@@ -1,10 +1,11 @@
 import { expect, describe, it } from "bun:test";
+import { apiUrl } from "../shared";
 
-const appDomain = process.env.APP_DOMAIN || "http://localhost:3000";
+// General
 
 describe("api", () => {
   describe("GET /api/health", async () => {
-    const response = await fetch(`${appDomain}/api/health`);
+    const response = await fetch(`${apiUrl}/health`);
 
     it("should return 200", () => {
       expect(response.status).toEqual(200);
@@ -17,7 +18,7 @@ describe("api", () => {
   });
 
   describe("GET /api/[...]", async () => {
-    const response = await fetch(`${appDomain}/api/`);
+    const response = await fetch(`${apiUrl}/api/`);
 
     it("should return 404", () => {
       expect(response.status).toEqual(404);
