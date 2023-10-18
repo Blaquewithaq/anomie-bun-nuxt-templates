@@ -1,3 +1,5 @@
+import { cookieSettings } from "./constants/cookie";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   // General
@@ -23,6 +25,9 @@ export default defineNuxtConfig({
     typedPages: true,
   },
   modules: [
+    // https://nuxt.com/modules/supabase
+    "@nuxtjs/supabase",
+
     // https://nuxt-prepare.byjohann.dev/guide/getting-started.html
     "nuxt-prepare",
   ],
@@ -41,5 +46,25 @@ export default defineNuxtConfig({
   devtools: { enabled: process.env.NODE_ENV === "development" },
   prepareKit: {
     scripts: ["server/prepare/process.ts", "server/prepare/server.ts"],
+  },
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_KEY,
+    serviceKey: process.env.SUPABASE_SERVICE_KEY,
+    clientOptions: {
+      auth: {
+        flowType: "pkce",
+        detectSessionInUrl: true,
+        persistSession: true,
+        autoRefreshToken: true,
+      },
+    },
+    cookieName: "av",
+    cookieOptions: {
+      maxAge: cookieSettings.maxAge,
+      sameSite: cookieSettings.sameSite,
+      secure: cookieSettings.secure,
+    },
+    redirect: false,
   },
 });
