@@ -1,19 +1,42 @@
 declare global {
-  type AnomieConfig = {
-    app: {
-      name: string;
-      version: string;
-      description: string;
-      website: string;
-    };
-    settings: {};
-    ui: {
-      loadingIndicator: {
-        color: string;
-        background: string;
-        height: number;
-      };
-    };
+  type AppBuild = {
+    id: string;
+    codename: string;
+    changelog: string;
+    buildDate: string;
+    version: string;
+    createdAt: Date;
+    updatedAt: Date;
+    targets?: AppTarget[];
+  };
+
+  type AppTarget = {
+    id: string;
+    name: string;
+    description: string;
+    platform:
+      | "windows"
+      | "macos"
+      | "linux"
+      | "android"
+      | "ios"
+      | "web"
+      | "other";
+    createdAt: Date;
+    updatedAt: Date;
+    builds?: AppBuild[];
+  };
+
+  type AppClient = {
+    id: string;
+    online: boolean;
+    lastOnline: Date;
+    disabled: boolean;
+    browserProperties: JSON;
+    createdAt: Date;
+    updatedAt: Date;
+    build?: AppBuild;
+    target?: AppTarget;
   };
 }
 

@@ -5,19 +5,141 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  // directUrl = env("DIRECT_URL")
-  schemas  = ["app", "auth", "public"]
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  schemas   = ["app", "public"]
+}
+
+// -------------------------------------
+// Schema: APP
+
+model Build {
+  id        String   @id @unique @default(uuid()) @db.Uuid
+  codename  String   @unique @db.Text
+  changelog String   @db.Text
+  buildDate String //Find proper data type that works with db
+  version   String   @unique @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  linkBuildAndTarget LinkBuildAndTarget[]
+  linkClientAndBuild LinkClientAndBuild[]
+
+  @@map("build")
+  @@schema("app")
+}
+
+enum TargetPlatform {
+  windows
+  macos
+  linux
+  android
+  ios
+  web
+  other
+
+  @@map("target_platform")
+  @@schema("app")
+}
+
+model Target {
+  id          String         @id @unique @default(uuid()) @db.Uuid
+  name        String         @unique @db.Text
+  description String         @db.Text
+  platform    TargetPlatform
+  createdAt   DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime       @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  linkBuildAndTarget  LinkBuildAndTarget[]
+  linkClientAndTarget LinkClientAndTarget[]
+
+  @@map("target")
+  @@schema("app")
+}
+
+model Client {
+  id                String   @id @unique @default(uuid()) @db.Uuid
+  online            Boolean  @default(false)
+  lastOnline        DateTime @default(now()) @map("last_online") @db.Timestamptz(6)
+  disabled          Boolean  @default(false)
+  browserProperties Json     @map("browser_properties")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  linkClientAndBuild  LinkClientAndBuild[]
+  linkClientAndTarget LinkClientAndTarget[]
+
+  @@map("client")
+  @@schema("app")
+}
+
+// -------------------------------------
+// Links
+
+model LinkBuildAndTarget {
+  buildId   String   @map("build_id") @db.Uuid
+  targetId  String   @map("target_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  build     Build    @relation(fields: [buildId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  target    Target   @relation(fields: [targetId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([buildId, targetId])
+  @@map("link_build_and_target")
+  @@schema("app")
+}
+
+model LinkClientAndBuild {
+  clientId  String   @map("client_id") @db.Uuid
+  buildId   String   @map("build_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  build     Build    @relation(fields: [buildId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([buildId, clientId])
+  @@map("link_client_and_build")
+  @@schema("app")
+}
+
+model LinkClientAndTarget {
+  clientId  String   @map("client_id") @db.Uuid
+  targetId  String   @map("target_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  target    Target   @relation(fields: [targetId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([clientId, targetId])
+  @@map("link_client_and_target")
+  @@schema("app")
+}
+
+// -------------------------------------
+// Schema: PUBLIC
+
+enum UserRole {
+  admin
+  user
+  beta
+  tester
+
+  @@map("user_role")
+  @@schema("public")
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String   @id @unique @default(uuid()) @db.Uuid
+  username  String   @unique @db.Text
+  email     String   @unique @db.Text
+  phone     String?  @unique @db.Text
+  role      UserRole @default(user)
+  verified  Boolean  @default(false)
+  banned    Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
 
-  @@map("users")
-  @@schema("app")
+  @@map("user")
+  @@schema("public")
 }
