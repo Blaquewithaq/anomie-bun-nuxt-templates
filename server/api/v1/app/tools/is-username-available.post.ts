@@ -7,5 +7,5 @@ export default defineEventHandler(async (event: H3Event) => {
     return sendResponseCode({ event, statusCode: 400 });
   }
 
-  return isUsernameAvailable(body.email);
+  return isUsernameAvailable(body.username);
 });

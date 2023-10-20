@@ -91,6 +91,6 @@
   },
   "prisma": {
     "schema": "server/database/schema.prisma",
-    "seed": "bun run ./server/database/seed.ts"
+    "seed": "ts-node --esm ./server/database/seed.ts"
   }
 }
