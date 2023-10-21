@@ -28,6 +28,9 @@ export default defineNuxtConfig({
     // https://nuxt.com/modules/supabase
     "@nuxtjs/supabase",
 
+    // https://github.com/fuentesloic/nuxt3-stripe
+    "@unlok-co/nuxt-stripe",
+
     // https://nuxt-prepare.byjohann.dev/guide/getting-started.html
     "nuxt-prepare",
   ],
@@ -43,10 +46,25 @@ export default defineNuxtConfig({
   },
 
   // Modules
-  // devtools: { enabled: process.env.NODE_ENV === "development" },
-  devtools: false,
+  devtools: { enabled: true },
   prepareKit: {
     scripts: ["server/prepare/process.ts", "server/prepare/server.ts"],
+  },
+  stripe: {
+    server: {
+      key: process.env.STRIPE_API_KEY,
+      options: {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        apiVersion: process.env.STRIPE_API_VERSION,
+      },
+    },
+    client: {
+      key: process.env.STRIPE_PUBLISHABLE_KEY,
+      options: {
+        apiVersion: process.env.STRIPE_API_VERSION,
+      },
+    },
   },
   supabase: {
     url: process.env.SUPABASE_URL,
