@@ -22,7 +22,7 @@ CREATE OR REPLACE FUNCTION app.client_clear_expired()
 RETURNS VOID AS $$
 BEGIN
     DELETE FROM app.client
-    WHERE created_at < NOW() - INTERVAL '30 days';
+    WHERE created_at < NOW() - INTERVAL '7 days';
 END;
 $$ LANGUAGE plpgsql;
 

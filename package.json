@@ -41,7 +41,9 @@
     "supabase:functions:serve": "bunx supabase functions serve",
     "supabase:types": "bunx supabase gen types typescript --local > types/supabase.d.ts",
     "supabase:inbucket": "start http://localhost:54324",
-    "supabase:studio": "start http://localhost:54323"
+    "supabase:studio": "start http://localhost:54323",
+    "test": "bun test",
+    "test:watch": "bun test --watch"
   },
   "dependencies": {
     "nuxt-prepare": "^0.2.1",
