@@ -4,6 +4,18 @@ import chalk from "chalk";
 import ora from "ora";
 import { rimraf } from "rimraf";
 
+let full = false;
+
+if (process.argv.length > 2) {
+  switch (process.argv[2]) {
+    case "--full":
+      full = true;
+      break;
+    default:
+      break;
+  }
+}
+
 // Directories and files to clean
 const directories: string[] = [
   "dist",
@@ -14,6 +26,11 @@ const directories: string[] = [
 ];
 
 const files: string[] = [".eslintcache"];
+
+if (full) {
+  directories.push("node_modules");
+  files.push("bun.lockb");
+}
 
 // Clean directories and files
 async function clean() {
