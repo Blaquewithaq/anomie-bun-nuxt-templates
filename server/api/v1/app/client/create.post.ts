@@ -11,7 +11,7 @@ export default defineEventHandler(async (event: H3Event) => {
     online: body.online,
     lastOnline: body.lastOnline,
     disabled: body.disabled,
-    browserProperties: body.browserProperties,
+    data: body.data,
     buildId: body.buildId,
     targetId: body.targetId,
   });

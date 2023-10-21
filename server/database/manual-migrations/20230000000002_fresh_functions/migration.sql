@@ -48,3 +48,26 @@ $$ LANGUAGE plpgsql;
 -- CREATE OR REPLACE TRIGGER client_clear_all_on_build_operations
 -- AFTER INSERT OR UPDATE OR DELETE ON app.build
 -- FOR EACH ROW EXECUTE PROCEDURE app.client_clear_all();
+
+-- CreateFunction: app.client_data_clear_data
+CREATE OR REPLACE FUNCTION app.client_data_clear_data()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.client_data := jsonb_set(NEW.client_data, '{browserProperties}', 'null');
+    RETURN NEW;
+END;
+
+-- CreateFunction: app.client_data_clear_browser_properties_data
+CREATE OR REPLACE FUNCTION app.client_data_clear_browser_properties_data()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.client_data := jsonb_set(NEW.client_data, '{browserProperties}', 'null');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- CreateTrigger: app.client_data_clear_browser_properties_data
+CREATE OR REPLACE TRIGGER client_data_clear_data_on_browser_properties
+BEFORE INSERT OR UPDATE ON app.client_data
+FOR EACH ROW WHEN (NEW.client_data->>'browserPropertiesAllowCollect')::boolean = false
+EXECUTE PROCEDURE app.client_data_clear_browser_properties_data();

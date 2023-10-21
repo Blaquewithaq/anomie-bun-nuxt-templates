@@ -58,14 +58,27 @@ model Target {
   @@schema("app")
 }
 
+model ClientData {
+  id                            String   @id @unique @default(uuid()) @db.Uuid
+  browserPropertiesAllowCollect Boolean  @default(true) @map("browser_properties_allow_collect")
+  browserProperties             Json     @map("browser_properties")
+  createdAt                     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                     DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+
+  client Client @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("client_data")
+  @@schema("app")
+}
+
 model Client {
-  id                String   @id @unique @default(uuid()) @db.Uuid
-  online            Boolean  @default(false)
-  lastOnline        DateTime @default(now()) @map("last_online") @db.Timestamptz(6)
-  disabled          Boolean  @default(false)
-  browserProperties Json     @map("browser_properties")
-  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt         DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  id         String      @id @unique @default(uuid()) @db.Uuid
+  online     Boolean     @default(false)
+  lastOnline DateTime    @default(now()) @map("last_online") @db.Timestamptz(6)
+  disabled   Boolean     @default(false)
+  data       ClientData?
+  createdAt  DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime    @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   linkClientAndBuild  LinkClientAndBuild[]
   linkClientAndTarget LinkClientAndTarget[]

@@ -511,14 +511,14 @@ export async function createClientQuery({
   online,
   lastOnline,
   disabled,
-  browserProperties,
+  data,
   buildId,
   targetId,
 }: {
   online?: boolean;
   lastOnline?: string;
   disabled?: boolean;
-  browserProperties: string;
+  data?: AppClientData;
   buildId: string;
   targetId: string;
 }): Promise<AppClient> {
@@ -527,7 +527,16 @@ export async function createClientQuery({
       online,
       lastOnline,
       disabled,
-      browserProperties,
+      data: data
+        ? {
+            create: {
+              browserPropertiesAllowCollect: data.browserPropertiesAllowCollect,
+              browserProperties: data.browserProperties
+                ? JSON.parse(data.browserProperties)
+                : undefined,
+            },
+          }
+        : undefined,
       linkClientAndBuild: {
         create: {
           build: {
@@ -548,6 +557,7 @@ export async function createClientQuery({
       },
     },
     include: {
+      data: true,
       linkClientAndBuild: {
         include: {
           build: true,
@@ -566,7 +576,16 @@ export async function createClientQuery({
     online: _result.online,
     lastOnline: _result.lastOnline,
     disabled: _result.disabled,
-    browserProperties: JSON.parse(_result.browserProperties as string),
+    data: _result.data
+      ? {
+          id: _result.data.id,
+          browserPropertiesAllowCollect:
+            _result.data.browserPropertiesAllowCollect,
+          browserProperties: JSON.stringify(_result.data.browserProperties),
+          createdAt: _result.data.createdAt,
+          updatedAt: _result.data.updatedAt,
+        }
+      : undefined,
     createdAt: _result.createdAt,
     updatedAt: _result.updatedAt,
     build: _result.linkClientAndBuild.map((link) => link.build)[0],
@@ -581,7 +600,7 @@ export async function updateClientQuery({
   online,
   lastOnline,
   disabled,
-  browserProperties,
+  data,
   buildId,
   targetId,
 }: {
@@ -589,7 +608,7 @@ export async function updateClientQuery({
   online?: boolean;
   lastOnline?: string;
   disabled?: boolean;
-  browserProperties?: string;
+  data?: AppClientData;
   buildId: string;
   targetId?: string;
 }) {
@@ -653,9 +672,19 @@ export async function updateClientQuery({
       online,
       lastOnline,
       disabled,
-      browserProperties,
+      data: data
+        ? {
+            update: {
+              browserPropertiesAllowCollect: data.browserPropertiesAllowCollect,
+              browserProperties: data.browserProperties
+                ? JSON.parse(data.browserProperties)
+                : undefined,
+            },
+          }
+        : undefined,
     },
     include: {
+      data: true,
       linkClientAndBuild: {
         include: {
           build: true,
@@ -674,7 +703,16 @@ export async function updateClientQuery({
     online: _result.online,
     lastOnline: _result.lastOnline,
     disabled: _result.disabled,
-    browserProperties: JSON.parse(_result.browserProperties as string),
+    data: _result.data
+      ? {
+          id: _result.data.id,
+          browserPropertiesAllowCollect:
+            _result.data.browserPropertiesAllowCollect,
+          browserProperties: JSON.stringify(_result.data.browserProperties),
+          createdAt: _result.data.createdAt,
+          updatedAt: _result.data.updatedAt,
+        }
+      : undefined,
     createdAt: _result.createdAt,
     updatedAt: _result.updatedAt,
     build: _result.linkClientAndBuild.map((link) => link.build)[0],
@@ -694,6 +732,7 @@ export async function deleteClientQuery({
       id,
     },
     include: {
+      data: true,
       linkClientAndBuild: {
         include: {
           build: true,
@@ -712,7 +751,16 @@ export async function deleteClientQuery({
     online: _result.online,
     lastOnline: _result.lastOnline,
     disabled: _result.disabled,
-    browserProperties: JSON.parse(_result.browserProperties as string),
+    data: _result.data
+      ? {
+          id: _result.data.id,
+          browserPropertiesAllowCollect:
+            _result.data.browserPropertiesAllowCollect,
+          browserProperties: JSON.stringify(_result.data.browserProperties),
+          createdAt: _result.data.createdAt,
+          updatedAt: _result.data.updatedAt,
+        }
+      : undefined,
     createdAt: _result.createdAt,
     updatedAt: _result.updatedAt,
     build: _result.linkClientAndBuild.map((link) => link.build)[0],
@@ -732,6 +780,7 @@ export async function getClientQuery({
       id,
     },
     include: {
+      data: true,
       linkClientAndBuild: {
         include: {
           build: true,
@@ -752,7 +801,16 @@ export async function getClientQuery({
     online: _result.online,
     lastOnline: _result.lastOnline,
     disabled: _result.disabled,
-    browserProperties: JSON.parse(_result.browserProperties as string),
+    data: _result.data
+      ? {
+          id: _result.data.id,
+          browserPropertiesAllowCollect:
+            _result.data.browserPropertiesAllowCollect,
+          browserProperties: JSON.stringify(_result.data.browserProperties),
+          createdAt: _result.data.createdAt,
+          updatedAt: _result.data.updatedAt,
+        }
+      : undefined,
     createdAt: _result.createdAt,
     updatedAt: _result.updatedAt,
     build: _result.linkClientAndBuild.map((link) => link.build)[0],
@@ -765,6 +823,7 @@ export async function getClientQuery({
 export async function getClientsQuery(): Promise<AppClient[] | Error> {
   const _result = await prisma.client.findMany({
     include: {
+      data: true,
       linkClientAndBuild: {
         include: {
           build: true,
@@ -785,7 +844,16 @@ export async function getClientsQuery(): Promise<AppClient[] | Error> {
     online: client.online,
     lastOnline: client.lastOnline,
     disabled: client.disabled,
-    browserProperties: JSON.parse(client.browserProperties as string),
+    data: client.data
+      ? {
+          id: client.data.id,
+          browserPropertiesAllowCollect:
+            client.data.browserPropertiesAllowCollect,
+          browserProperties: JSON.stringify(client.data.browserProperties),
+          createdAt: client.data.createdAt,
+          updatedAt: client.data.updatedAt,
+        }
+      : undefined,
     createdAt: client.createdAt,
     updatedAt: client.updatedAt,
     build: client.linkClientAndBuild.map((link) => link.build)[0],

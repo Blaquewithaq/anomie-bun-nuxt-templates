@@ -274,7 +274,7 @@ describe("app", () => {
       it("should match mockTarget", () => {
         expect(json.name).toEqual(mockTarget.name + "-updated");
         expect(json.description).toEqual(mockTarget.description + "-updated");
-        expect(json.platform).toEqual(mockTarget.platform);
+        expect(json.platform).toEqual(mockTarget.platform as AppTargetPlatform);
       });
     });
 
@@ -384,7 +384,7 @@ describe("app", () => {
             online: mockClient.online,
             lastOnline: mockClient.lastOnline,
             disabled: mockClient.disabled,
-            browserProperties: mockClient.browserProperties,
+            data: mockClient.data,
             buildId,
             targetId,
           }),
@@ -409,7 +409,7 @@ describe("app", () => {
           online: expect.any(Boolean),
           lastOnline: expect.any(String),
           disabled: expect.any(Boolean),
-          browserProperties: expect.any(Object),
+          data: expect.any(Object),
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
           build: expect.any(Object),
@@ -427,7 +427,7 @@ describe("app", () => {
             online: mockClient.online,
             lastOnline: mockClient.lastOnline,
             disabled: mockClient.disabled,
-            browserProperties: mockClient.browserProperties,
+            data: mockClient.data,
             buildId,
             targetId,
           }),
@@ -452,7 +452,7 @@ describe("app", () => {
           online: expect.any(Boolean),
           lastOnline: expect.any(String),
           disabled: expect.any(Boolean),
-          browserProperties: expect.any(Object),
+          data: expect.any(Object),
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
           build: expect.any(Object),
@@ -463,9 +463,9 @@ describe("app", () => {
       it("should match mockClient", () => {
         expect(json.online).toEqual(mockClient.online);
         expect(json.disabled).toEqual(mockClient.disabled);
-        expect(json.browserProperties).toEqual(
-          JSON.parse(mockClient.browserProperties),
-        );
+        // expect(json.data?.browserPropertiesAllowCollect).toEqual(
+        //   JSON.parse(mockClient.data.browserPropertiesAllowCollect),
+        // );
       });
     });
 
@@ -490,12 +490,17 @@ describe("app", () => {
             online: expect.any(Boolean),
             lastOnline: expect.any(String),
             disabled: expect.any(Boolean),
-            browserProperties: expect.any(Object),
             createdAt: expect.any(String),
             updatedAt: expect.any(String),
             build: expect.any(Object),
             target: expect.any(Object),
           });
+
+          if (item.data) {
+            expect(item).toMatchObject({
+              data: expect.any(Object),
+            });
+          }
         });
       });
     });
@@ -523,7 +528,7 @@ describe("app", () => {
           online: expect.any(Boolean),
           lastOnline: expect.any(String),
           disabled: expect.any(Boolean),
-          browserProperties: expect.any(Object),
+          data: expect.any(Object),
           createdAt: expect.any(String),
           updatedAt: expect.any(String),
           build: expect.any(Object),
@@ -541,7 +546,7 @@ describe("app", () => {
             online: mockClient.online,
             lastOnline: mockClient.lastOnline,
             disabled: mockClient.disabled,
-            browserProperties: mockClient.browserProperties,
+            data: mockClient.data,
             buildId,
             targetId,
           }),

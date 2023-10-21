@@ -43,7 +43,7 @@ describe("user", () => {
     });
 
     it("should match mockUser", () => {
-      expect(json.role).toEqual(mockUser.role);
+      expect(json.role).toEqual(mockUser.role as PublicUserRole);
       expect(json.verified).toEqual(mockUser.verified);
       expect(json.banned).toEqual(mockUser.banned);
     });

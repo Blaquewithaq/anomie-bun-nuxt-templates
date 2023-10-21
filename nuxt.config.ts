@@ -43,7 +43,8 @@ export default defineNuxtConfig({
   },
 
   // Modules
-  devtools: { enabled: process.env.NODE_ENV === "development" },
+  // devtools: { enabled: process.env.NODE_ENV === "development" },
+  devtools: false,
   prepareKit: {
     scripts: ["server/prepare/process.ts", "server/prepare/server.ts"],
   },

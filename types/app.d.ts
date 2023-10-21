@@ -10,21 +10,24 @@ declare global {
     targets?: AppTarget[];
   };
 
+  type AppTargetPlatform = "windows" | "macos" | "linux" | "android" | "ios" | "web" | "other";
+
   type AppTarget = {
     id: string;
     name: string;
     description: string;
-    platform:
-      | "windows"
-      | "macos"
-      | "linux"
-      | "android"
-      | "ios"
-      | "web"
-      | "other";
+    platform: AppTargetPlatform;
     createdAt: Date;
     updatedAt: Date;
     builds?: AppBuild[];
+  };
+
+  type AppClientData = {
+    id: string;
+    browserPropertiesAllowCollect?: boolean;
+    browserProperties?: string | null;
+    createdAt: Date;
+    updatedAt: Date;
   };
 
   type AppClient = {
@@ -32,7 +35,7 @@ declare global {
     online: boolean;
     lastOnline: Date;
     disabled: boolean;
-    browserProperties: string;
+    data?: AppClientData | null;
     createdAt: Date;
     updatedAt: Date;
     build?: AppBuild;

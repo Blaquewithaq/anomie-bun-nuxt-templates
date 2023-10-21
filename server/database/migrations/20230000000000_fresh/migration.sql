@@ -33,12 +33,22 @@ CREATE TABLE "app"."target" (
 );
 
 -- CreateTable
+CREATE TABLE "app"."client_data" (
+    "id" UUID NOT NULL,
+    "browser_properties_allow_collect" BOOLEAN NOT NULL DEFAULT true,
+    "browser_properties" JSONB NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "client_data_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "app"."client" (
     "id" UUID NOT NULL,
     "online" BOOLEAN NOT NULL DEFAULT false,
     "last_online" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "disabled" BOOLEAN NOT NULL DEFAULT false,
-    "browser_properties" JSONB NOT NULL,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -106,6 +116,9 @@ CREATE UNIQUE INDEX "target_id_key" ON "app"."target"("id");
 CREATE UNIQUE INDEX "target_name_key" ON "app"."target"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "client_data_id_key" ON "app"."client_data"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "client_id_key" ON "app"."client"("id");
 
 -- CreateIndex
@@ -119,6 +132,9 @@ CREATE UNIQUE INDEX "user_email_key" ON "public"."user"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_phone_key" ON "public"."user"("phone");
+
+-- AddForeignKey
+ALTER TABLE "app"."client_data" ADD CONSTRAINT "client_data_id_fkey" FOREIGN KEY ("id") REFERENCES "app"."client"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "app"."link_build_and_target" ADD CONSTRAINT "link_build_and_target_build_id_fkey" FOREIGN KEY ("build_id") REFERENCES "app"."build"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
