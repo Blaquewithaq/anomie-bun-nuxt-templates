@@ -54,7 +54,7 @@
   "nuxtr.vueFiles.script.defaultLanguage": "ts",
   "nuxtr.vueFiles.style.addStyleTag": false,
   "nuxtr.vueFiles.style.alwaysScoped": true,
-  "nuxtr.vueFiles.style.defaultLanguage": "scss",
+  "nuxtr.vueFiles.style.defaultLanguage": "css",
   "nuxtr.openItemsAfterCreation": true,
   "nuxtr.defaultPackageManager": "Bun",
   "nuxtr.intellisense.nuxtrc": true,
