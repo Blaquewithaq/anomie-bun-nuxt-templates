@@ -508,16 +508,25 @@ export async function getTargetsQuery(): Promise<AppTarget[] | Error> {
 // Client
 
 export async function createClientQuery({
+  online,
+  lastOnline,
+  disabled,
   browserProperties,
   buildId,
   targetId,
 }: {
+  online?: boolean;
+  lastOnline?: string;
+  disabled?: boolean;
   browserProperties: string;
   buildId: string;
   targetId: string;
 }): Promise<AppClient> {
   const _result = await prisma.client.create({
     data: {
+      online,
+      lastOnline,
+      disabled,
       browserProperties,
       linkClientAndBuild: {
         create: {

@@ -8,6 +8,9 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   return await createClientQuery({
+    online: body.online,
+    lastOnline: body.lastOnline,
+    disabled: body.disabled,
     browserProperties: body.browserProperties,
     buildId: body.buildId,
     targetId: body.targetId,

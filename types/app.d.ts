@@ -32,7 +32,7 @@ declare global {
     online: boolean;
     lastOnline: Date;
     disabled: boolean;
-    browserProperties: JSON;
+    browserProperties: string;
     createdAt: Date;
     updatedAt: Date;
     build?: AppBuild;

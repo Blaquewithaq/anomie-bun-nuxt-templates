@@ -45,6 +45,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- CreateTrigger: app.client_clear_all
-CREATE OR REPLACE TRIGGER client_clear_all_on_build_operations
-AFTER INSERT OR UPDATE OR DELETE ON app.build
-FOR EACH ROW EXECUTE PROCEDURE app.client_clear_all();
+-- CREATE OR REPLACE TRIGGER client_clear_all_on_build_operations
+-- AFTER INSERT OR UPDATE OR DELETE ON app.build
+-- FOR EACH ROW EXECUTE PROCEDURE app.client_clear_all();
