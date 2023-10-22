@@ -99,15 +99,28 @@ async function main() {
     },
   });
 
-  await prisma.user.create({
+  await prisma.account.create({
     data: {
       id: "b7a8a3b0-1f7e-4f1f-8e1c-0f4b9e3d6f8c",
-      username: "test",
       email: "test@test.com",
       phone: "1234567890",
       role: "user",
       verified: true,
       banned: false,
+    },
+  });
+
+  await prisma.accountProfile.create({
+    data: {
+      id: "b7a8a3b0-1f7e-4f1f-8e1c-0f4b9e3d6f8c",
+      username: "Test",
+    },
+  });
+
+  await prisma.accountStripe.create({
+    data: {
+      id: "b7a8a3b0-1f7e-4f1f-8e1c-0f4b9e3d6f8c",
+      customerId: "cus_test",
     },
   });
 }

@@ -1,3 +1,58 @@
+-- CreateFunction
+-- This function updates the email in the user table when the email is updated in the auth.users table
+CREATE OR REPLACE FUNCTION private.update_user_email()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE private."account"
+  SET email = NEW.email
+  WHERE id = NEW.id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- CreateTrigger
+-- This trigger calls the update_user_email function when the email is updated in the auth.users table
+CREATE OR REPLACE TRIGGER on_auth_user_updated_update_user_email
+AFTER UPDATE ON auth.users
+FOR EACH ROW EXECUTE PROCEDURE private.update_user_email();
+
+-- CreateFunction
+-- This function updates the phone number in the user table when the phone number is updated in the auth.users table
+CREATE OR REPLACE FUNCTION private.update_user_phone()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE private."account"
+  SET phone = NEW.phone
+  WHERE id = NEW.id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- CreateTrigger
+-- This trigger calls the update_user_phone function when the phone number is updated in the auth.users table
+CREATE OR REPLACE TRIGGER on_auth_user_updated_update_user_phone
+AFTER UPDATE ON auth.users
+FOR EACH ROW EXECUTE PROCEDURE private.update_user_phone();
+
+
+-- CreateFunction
+-- This function updates the username in the user table when the username is updated in the auth.users table
+CREATE OR REPLACE FUNCTION private.update_user_username()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE public."account_profile"
+  SET username = NEW.raw_user_meta_data->>'username'
+  WHERE id = NEW.id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- CreateTrigger
+-- This trigger calls the update_user_username function when the username is updated in the auth.users table
+CREATE OR REPLACE TRIGGER on_auth_user_updated_update_user_username
+AFTER UPDATE ON auth.users
+FOR EACH ROW EXECUTE PROCEDURE private.update_user_username();
+
 -- CreateFunction: app.client_auto_offline
 CREATE OR REPLACE FUNCTION app.client_auto_offline()
 RETURNS VOID AS $$
@@ -56,18 +111,20 @@ BEGIN
     NEW.client_data := jsonb_set(NEW.client_data, '{browserProperties}', 'null');
     RETURN NEW;
 END;
+$$ LANGUAGE plpgsql;
 
 -- CreateFunction: app.client_data_clear_browser_properties_data
 CREATE OR REPLACE FUNCTION app.client_data_clear_browser_properties_data()
 RETURNS TRIGGER AS $$
 BEGIN
+  IF (NEW.client_data->>'browserPropertiesAllowCollect') = 'false' THEN
     NEW.client_data := jsonb_set(NEW.client_data, '{browserProperties}', 'null');
-    RETURN NEW;
+  END IF;
+  RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
 -- CreateTrigger: app.client_data_clear_browser_properties_data
 CREATE OR REPLACE TRIGGER client_data_clear_data_on_browser_properties
 BEFORE INSERT OR UPDATE ON app.client_data
-FOR EACH ROW WHEN (NEW.client_data->>'browserPropertiesAllowCollect')::boolean = false
-EXECUTE PROCEDURE app.client_data_clear_browser_properties_data();
+FOR EACH ROW EXECUTE FUNCTION app.client_data_clear_browser_properties_data();

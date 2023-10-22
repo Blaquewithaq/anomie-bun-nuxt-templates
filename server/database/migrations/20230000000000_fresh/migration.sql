@@ -1,11 +1,14 @@
 -- CreateSchema
 CREATE SCHEMA IF NOT EXISTS "app";
 
+-- CreateSchema
+CREATE SCHEMA IF NOT EXISTS "private";
+
 -- CreateEnum
 CREATE TYPE "app"."target_platform" AS ENUM ('windows', 'macos', 'linux', 'android', 'ios', 'web', 'other');
 
 -- CreateEnum
-CREATE TYPE "public"."user_role" AS ENUM ('admin', 'user', 'beta', 'tester');
+CREATE TYPE "private"."profile_role" AS ENUM ('admin', 'user', 'beta', 'tester');
 
 -- CreateTable
 CREATE TABLE "app"."build" (
@@ -86,18 +89,37 @@ CREATE TABLE "app"."link_client_and_target" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."user" (
+CREATE TABLE "private"."account" (
     "id" UUID NOT NULL,
-    "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "phone" TEXT,
-    "role" "public"."user_role" NOT NULL DEFAULT 'user',
+    "role" "private"."profile_role" NOT NULL DEFAULT 'user',
     "verified" BOOLEAN NOT NULL DEFAULT false,
     "banned" BOOLEAN NOT NULL DEFAULT false,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "user_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "account_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "private"."account_stripe" (
+    "id" UUID NOT NULL,
+    "customer_id" TEXT,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "account_stripe_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."account_profile" (
+    "id" UUID NOT NULL,
+    "username" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "account_profile_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -122,16 +144,25 @@ CREATE UNIQUE INDEX "client_data_id_key" ON "app"."client_data"("id");
 CREATE UNIQUE INDEX "client_id_key" ON "app"."client"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_id_key" ON "public"."user"("id");
+CREATE UNIQUE INDEX "account_id_key" ON "private"."account"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_username_key" ON "public"."user"("username");
+CREATE UNIQUE INDEX "account_email_key" ON "private"."account"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_email_key" ON "public"."user"("email");
+CREATE UNIQUE INDEX "account_phone_key" ON "private"."account"("phone");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_phone_key" ON "public"."user"("phone");
+CREATE UNIQUE INDEX "account_stripe_id_key" ON "private"."account_stripe"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "account_stripe_customer_id_key" ON "private"."account_stripe"("customer_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "account_profile_id_key" ON "public"."account_profile"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "account_profile_username_key" ON "public"."account_profile"("username");
 
 -- AddForeignKey
 ALTER TABLE "app"."client_data" ADD CONSTRAINT "client_data_id_fkey" FOREIGN KEY ("id") REFERENCES "app"."client"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
@@ -154,6 +185,12 @@ ALTER TABLE "app"."link_client_and_target" ADD CONSTRAINT "link_client_and_targe
 -- AddForeignKey
 ALTER TABLE "app"."link_client_and_target" ADD CONSTRAINT "link_client_and_target_target_id_fkey" FOREIGN KEY ("target_id") REFERENCES "app"."target"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
+-- AddForeignKey
+ALTER TABLE "private"."account_stripe" ADD CONSTRAINT "account_stripe_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."account"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "public"."account_profile" ADD CONSTRAINT "account_profile_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."account"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+
 -- SetPermissions
 GRANT USAGE ON SCHEMA "app" TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
 
@@ -164,6 +201,17 @@ GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA "app" TO postgres, authenticated
 ALTER DEFAULT PRIVILEGES IN SCHEMA "app" GRANT ALL ON TABLES TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
 ALTER DEFAULT PRIVILEGES IN SCHEMA "app" GRANT ALL ON FUNCTIONS TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
 ALTER DEFAULT PRIVILEGES IN SCHEMA "app" GRANT ALL ON SEQUENCES TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
+
+-- SetPermissions
+GRANT USAGE ON SCHEMA "private" TO postgres, service_role, dashboard_user, supabase_admin;
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA "private" TO postgres, service_role, dashboard_user, supabase_admin;
+GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA "private" TO postgres, service_role, dashboard_user, supabase_admin;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA "private" TO postgres, service_role, dashboard_user, supabase_admin;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA "private" GRANT ALL ON TABLES TO postgres, service_role, dashboard_user, supabase_admin;
+ALTER DEFAULT PRIVILEGES IN SCHEMA "private" GRANT ALL ON FUNCTIONS TO postgres, service_role, dashboard_user, supabase_admin;
+ALTER DEFAULT PRIVILEGES IN SCHEMA "private" GRANT ALL ON SEQUENCES TO postgres, service_role, dashboard_user, supabase_admin;
 
 -- SetPermissions
 GRANT USAGE ON SCHEMA "public" TO postgres, authenticated, service_role, dashboard_user, supabase_admin;

@@ -7,12 +7,34 @@
       />
       <NuxtLayout>
         <NuxtPage />
+        <button @click="signUp">Sign Up</button>
       </NuxtLayout>
     </Body>
   </Html>
 </template>
 
 <script setup lang="ts">
+const signUp = async () => {
+  const { data, error } = await useSupabaseClient().auth.signUp({
+    email: "testMe@test.com",
+    password: "rawr1234",
+    options: {
+      data: {
+        username: "testUsername",
+      },
+    },
+  });
+
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
+  console.log(data);
+
+  return data;
+};
+
 const anomie = useAppConfig().anomie;
 
 useHead({

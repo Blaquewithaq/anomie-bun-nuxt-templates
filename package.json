@@ -6,6 +6,7 @@
     "commit": "git-cz",
     "postinstall": "bun prepare:husky && bun prepare:prisma && bun prepare:nuxt",
     "timeout": "node -e \"require('node:timers/promises').setTimeout(5_000)\"",
+    "db:reset": "bun supabase:reset && bun prisma:reset",
     "deps:check": "bunx taze major",
     "deps:update": "bunx taze major -w -i",
     "lint": "bun lint:ts",
