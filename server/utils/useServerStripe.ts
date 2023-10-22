@@ -6,5 +6,5 @@ export async function handleStripeWebhook(event: H3Event) {
 
   const stripe = await useServerStripe(event);
 
-  consoleMessageServer("log", "stripe:", stripe);
+  consoleMessageServer("log", "stripe:", typeof stripe);
 }
