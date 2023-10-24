@@ -50,7 +50,7 @@ export const mockClient = {
   },
 };
 
-export const mockUser = {
+export const mockAccount = {
   email: "test@test.com",
   phone: "1234567890",
   username: "Test",

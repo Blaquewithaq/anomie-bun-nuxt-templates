@@ -8,7 +8,7 @@ import {
   mockBuild,
   mockTarget,
   mockClient,
-  mockUser,
+  mockAccount,
 } from "../shared";
 
 // App
@@ -585,7 +585,7 @@ describe("app", () => {
         `${apiUrl}/${apiVersion}/app/tools/is-email-available`,
         {
           method: "POST",
-          body: JSON.stringify({ email: mockUser.email }),
+          body: JSON.stringify({ email: mockAccount.email }),
         },
       );
 
@@ -617,7 +617,7 @@ describe("app", () => {
         `${apiUrl}/${apiVersion}/app/tools/is-phone-available`,
         {
           method: "POST",
-          body: JSON.stringify({ phone: mockUser.phone }),
+          body: JSON.stringify({ phone: mockAccount.phone }),
         },
       );
 
@@ -648,7 +648,7 @@ describe("app", () => {
         `${apiUrl}/${apiVersion}/app/tools/is-username-available`,
         {
           method: "POST",
-          body: JSON.stringify({ username: mockUser.username }),
+          body: JSON.stringify({ username: mockAccount.username }),
         },
       );
 

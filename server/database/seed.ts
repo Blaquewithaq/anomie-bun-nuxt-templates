@@ -110,7 +110,7 @@ async function main() {
   await prisma.accountStripe.create({
     data: {
       id: "b7a8a3b0-1f7e-4f1f-8e1c-0f4b9e3d6f8c",
-      customerId: "cus_test",
+      customerId: null,
     },
   });
 }
