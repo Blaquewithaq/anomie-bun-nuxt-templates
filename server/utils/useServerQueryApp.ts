@@ -571,6 +571,8 @@ export async function createClientQuery({
     },
   });
 
+  console.log("_resultMe", _result);
+
   const result: AppClient = {
     id: _result.id,
     online: _result.online,

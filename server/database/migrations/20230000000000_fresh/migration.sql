@@ -39,7 +39,7 @@ CREATE TABLE "app"."target" (
 CREATE TABLE "app"."client_data" (
     "id" UUID NOT NULL,
     "browser_properties_allow_collect" BOOLEAN NOT NULL DEFAULT true,
-    "browser_properties" JSONB NOT NULL,
+    "browser_properties" JSONB,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -190,36 +190,3 @@ ALTER TABLE "private"."account_stripe" ADD CONSTRAINT "account_stripe_id_fkey" F
 
 -- AddForeignKey
 ALTER TABLE "public"."account_profile" ADD CONSTRAINT "account_profile_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."account"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
-
--- SetPermissions
-GRANT USAGE ON SCHEMA "app" TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
-
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA "app" TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
-GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA "app" TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA "app" TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
-
-ALTER DEFAULT PRIVILEGES IN SCHEMA "app" GRANT ALL ON TABLES TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
-ALTER DEFAULT PRIVILEGES IN SCHEMA "app" GRANT ALL ON FUNCTIONS TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
-ALTER DEFAULT PRIVILEGES IN SCHEMA "app" GRANT ALL ON SEQUENCES TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
-
--- SetPermissions
-GRANT USAGE ON SCHEMA "private" TO postgres, service_role, dashboard_user, supabase_admin;
-
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA "private" TO postgres, service_role, dashboard_user, supabase_admin;
-GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA "private" TO postgres, service_role, dashboard_user, supabase_admin;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA "private" TO postgres, service_role, dashboard_user, supabase_admin;
-
-ALTER DEFAULT PRIVILEGES IN SCHEMA "private" GRANT ALL ON TABLES TO postgres, service_role, dashboard_user, supabase_admin;
-ALTER DEFAULT PRIVILEGES IN SCHEMA "private" GRANT ALL ON FUNCTIONS TO postgres, service_role, dashboard_user, supabase_admin;
-ALTER DEFAULT PRIVILEGES IN SCHEMA "private" GRANT ALL ON SEQUENCES TO postgres, service_role, dashboard_user, supabase_admin;
-
--- SetPermissions
-GRANT USAGE ON SCHEMA "public" TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
-
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA "public" TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
-GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA "public" TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA "public" TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
-
-ALTER DEFAULT PRIVILEGES IN SCHEMA "public" GRANT ALL ON TABLES TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
-ALTER DEFAULT PRIVILEGES IN SCHEMA "public" GRANT ALL ON FUNCTIONS TO postgres, authenticated, service_role, dashboard_user, supabase_admin;
-ALTER DEFAULT PRIVILEGES IN SCHEMA "public" GRANT ALL ON SEQUENCES TO postgres, authenticated, service_role, dashboard_user, supabase_admin;

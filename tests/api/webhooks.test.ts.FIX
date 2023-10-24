@@ -1,0 +1,33 @@
+import type { H3Error } from "h3";
+import { expect, describe, it } from "bun:test";
+import { apiUrl, apiVersion } from "../shared";
+
+// Webhooks
+// TODO: REWORK
+
+describe("api", () => {
+  describe("GET /api/v1/webhooks/stripe", async () => {
+    const response = await fetch(`${apiUrl}/${apiVersion}/webhooks/stripe`, {
+          method: "POST",
+      },
+    );
+
+    it("should return 204", () => {
+      expect(response.status).toEqual(204);
+    });
+  });
+
+  describe("GET /api/v1/webhooks/stripe/create-customer", async () => {
+    const response = await fetch(`${apiUrl}/${apiVersion}/webhooks/stripe/create-customer`, {
+          method: "POST",
+      },
+    );
+
+    console.log("response:", response);
+
+    it("should return 204", () => {
+      expect(response.status).toEqual(204);
+    });
+  });
+
+});

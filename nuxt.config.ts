@@ -46,7 +46,7 @@ export default defineNuxtConfig({
   },
 
   // Modules
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   prepareKit: {
     scripts: ["server/prepare/process.ts", "server/prepare/server.ts"],
   },

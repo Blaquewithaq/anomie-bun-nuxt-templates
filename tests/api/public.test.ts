@@ -1,11 +1,11 @@
 import { expect, describe, it } from "bun:test";
-import { apiUrl, apiVersion, userId, mockUser } from "../shared";
+import { apiUrl, apiVersion, accountId, mockUser } from "../shared";
 
-// User
-describe("user", () => {
-  describe(`POST /api/${apiVersion}/user/:id/update`, async () => {
+// Account
+describe("account", () => {
+  describe(`POST /api/${apiVersion}/account/:id/update`, async () => {
     const response = await fetch(
-      `${apiUrl}/${apiVersion}/user/${userId}/update`,
+      `${apiUrl}/${apiVersion}/account/${accountId}/update`,
       {
         method: "POST",
         body: JSON.stringify({
@@ -16,7 +16,7 @@ describe("user", () => {
       },
     );
 
-    const json = (await response.json()) as PublicUser;
+    const json = (await response.json()) as PrivateAccount;
 
     it("should return 200", () => {
       expect(response.status).toEqual(200);
@@ -28,22 +28,23 @@ describe("user", () => {
       );
     });
 
-    it("should match type PublicUser", () => {
+    it("should match type PrivateAccount", () => {
       expect(json).toMatchObject({
         id: expect.any(String),
-        username: expect.any(String),
         email: expect.any(String),
         phone: expect.any(String),
         role: expect.any(String),
         verified: expect.any(Boolean),
         banned: expect.any(Boolean),
+        profile: expect.any(Object),
+        stripe: expect.any(Object),
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
       });
     });
 
     it("should match mockUser", () => {
-      expect(json.role).toEqual(mockUser.role as PublicUserRole);
+      expect(json.role).toEqual(mockUser.role as PrivateAccountRole);
       expect(json.verified).toEqual(mockUser.verified);
       expect(json.banned).toEqual(mockUser.banned);
     });

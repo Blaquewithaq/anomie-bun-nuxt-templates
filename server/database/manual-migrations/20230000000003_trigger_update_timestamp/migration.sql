@@ -11,6 +11,7 @@ BEGIN
       'build',
       'target',
       'client',
+      'client_data',
       'link_build_and_target',
       'link_client_and_build',
       'link_client_and_target'

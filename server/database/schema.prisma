@@ -59,9 +59,9 @@ model Target {
 }
 
 model ClientData {
-  id                            String   @id @unique @default(uuid()) @db.Uuid
+  id                            String   @id @unique @db.Uuid
   browserPropertiesAllowCollect Boolean  @default(true) @map("browser_properties_allow_collect")
-  browserProperties             Json     @map("browser_properties")
+  browserProperties             Json?    @map("browser_properties")
   createdAt                     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt                     DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
 

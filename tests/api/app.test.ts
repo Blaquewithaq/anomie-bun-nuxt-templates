@@ -382,7 +382,7 @@ describe("app", () => {
           method: "POST",
           body: JSON.stringify({
             online: mockClient.online,
-            lastOnline: mockClient.lastOnline,
+            lastOnline: new Date().toISOString(),
             disabled: mockClient.disabled,
             data: mockClient.data,
             buildId,
@@ -463,9 +463,12 @@ describe("app", () => {
       it("should match mockClient", () => {
         expect(json.online).toEqual(mockClient.online);
         expect(json.disabled).toEqual(mockClient.disabled);
-        // expect(json.data?.browserPropertiesAllowCollect).toEqual(
-        //   JSON.parse(mockClient.data.browserPropertiesAllowCollect),
-        // );
+
+        if (json.data?.browserPropertiesAllowCollect !== undefined) {
+          expect(json.data?.browserPropertiesAllowCollect).toEqual(
+            mockClient.data.browserPropertiesAllowCollect,
+          );
+        }
       });
     });
 

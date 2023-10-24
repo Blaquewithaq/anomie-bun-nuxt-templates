@@ -1,6 +1,6 @@
 -- CreateFunction
--- This function updates the email in the user table when the email is updated in the auth.users table
-CREATE OR REPLACE FUNCTION private.update_user_email()
+-- This function updates the email in the account table when the email is updated in the auth.users table
+CREATE OR REPLACE FUNCTION private.update_account_email()
 RETURNS TRIGGER AS $$
 BEGIN
   UPDATE private."account"
@@ -11,14 +11,14 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- CreateTrigger
--- This trigger calls the update_user_email function when the email is updated in the auth.users table
-CREATE OR REPLACE TRIGGER on_auth_user_updated_update_user_email
+-- This trigger calls the update_account_email function when the email is updated in the auth.users table
+CREATE OR REPLACE TRIGGER on_auth_user_updated_update_account_email
 AFTER UPDATE ON auth.users
-FOR EACH ROW EXECUTE PROCEDURE private.update_user_email();
+FOR EACH ROW EXECUTE PROCEDURE private.update_account_email();
 
 -- CreateFunction
--- This function updates the phone number in the user table when the phone number is updated in the auth.users table
-CREATE OR REPLACE FUNCTION private.update_user_phone()
+-- This function updates the phone number in the account table when the phone number is updated in the auth.users table
+CREATE OR REPLACE FUNCTION private.update_account_phone()
 RETURNS TRIGGER AS $$
 BEGIN
   UPDATE private."account"
@@ -29,15 +29,15 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- CreateTrigger
--- This trigger calls the update_user_phone function when the phone number is updated in the auth.users table
-CREATE OR REPLACE TRIGGER on_auth_user_updated_update_user_phone
+-- This trigger calls the update_account_phone function when the phone number is updated in the auth.users table
+CREATE OR REPLACE TRIGGER on_auth_user_updated_update_account_phone
 AFTER UPDATE ON auth.users
-FOR EACH ROW EXECUTE PROCEDURE private.update_user_phone();
+FOR EACH ROW EXECUTE PROCEDURE private.update_account_phone();
 
 
 -- CreateFunction
--- This function updates the username in the user table when the username is updated in the auth.users table
-CREATE OR REPLACE FUNCTION private.update_user_username()
+-- This function updates the username in the account table when the username is updated in the auth.users table
+CREATE OR REPLACE FUNCTION private.update_account_username()
 RETURNS TRIGGER AS $$
 BEGIN
   UPDATE public."account_profile"
@@ -48,10 +48,10 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- CreateTrigger
--- This trigger calls the update_user_username function when the username is updated in the auth.users table
-CREATE OR REPLACE TRIGGER on_auth_user_updated_update_user_username
+-- This trigger calls the update_account_username function when the username is updated in the auth.users table
+CREATE OR REPLACE TRIGGER on_auth_user_updated_update_account_username
 AFTER UPDATE ON auth.users
-FOR EACH ROW EXECUTE PROCEDURE private.update_user_username();
+FOR EACH ROW EXECUTE PROCEDURE private.update_account_username();
 
 -- CreateFunction: app.client_auto_offline
 CREATE OR REPLACE FUNCTION app.client_auto_offline()
@@ -117,8 +117,8 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION app.client_data_clear_browser_properties_data()
 RETURNS TRIGGER AS $$
 BEGIN
-  IF (NEW.client_data->>'browserPropertiesAllowCollect') = 'false' THEN
-    NEW.client_data := jsonb_set(NEW.client_data, '{browserProperties}', 'null');
+  IF (NEW.browser_properties_allow_collect = false) THEN
+    NEW.browser_properties := null;
   END IF;
   RETURN NEW;
 END;
@@ -127,4 +127,4 @@ $$ LANGUAGE plpgsql;
 -- CreateTrigger: app.client_data_clear_browser_properties_data
 CREATE OR REPLACE TRIGGER client_data_clear_data_on_browser_properties
 BEFORE INSERT OR UPDATE ON app.client_data
-FOR EACH ROW EXECUTE FUNCTION app.client_data_clear_browser_properties_data();
+FOR EACH ROW EXECUTE PROCEDURE app.client_data_clear_browser_properties_data();

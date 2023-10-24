@@ -1,40 +1,29 @@
 import { prisma } from "./useServerDatabase";
 
-// User
+// AccountProfile
 
 // Automatically created when auth user is created
-// export async function createUserQuery() {}
+// export async function createAccountProfileQuery() {}
 
-export async function updateUserQuery({
+export async function updateAccountProfileQuery({
   id,
-  role,
-  verified,
-  banned,
+  username,
 }: {
   id: string;
-  role: "admin" | "user" | "beta" | "tester";
-  verified: boolean;
-  banned: boolean;
-}): Promise<PublicUser> {
-  const _result = await prisma.user.update({
+  username: string;
+}): Promise<PublicAccountProfile> {
+  const _result = await prisma.accountProfile.update({
     where: {
       id,
     },
     data: {
-      role,
-      verified,
-      banned,
+      username,
     },
   });
 
-  const result: PublicUser = {
+  const result: PublicAccountProfile = {
     id: _result.id,
     username: _result.username,
-    email: _result.email,
-    phone: _result.phone || "",
-    role: _result.role,
-    verified: _result.verified,
-    banned: _result.banned,
     createdAt: _result.createdAt,
     updatedAt: _result.updatedAt,
   };
@@ -43,14 +32,14 @@ export async function updateUserQuery({
 }
 
 // Automatically deleted when auth user is deleted
-// export async function deleteUserQuery() {}
+// export async function deleteAccountProfileQuery() {}
 
-export async function getUserQuery({
+export async function getAccountProfileQuery({
   id,
 }: {
   id: string;
-}): Promise<PublicUser | Error> {
-  const _result = await prisma.user.findFirst({
+}): Promise<PublicAccountProfile | Error> {
+  const _result = await prisma.accountProfile.findFirst({
     where: {
       id,
     },
@@ -58,14 +47,9 @@ export async function getUserQuery({
 
   if (!_result) return sendErrorCode({ statusCode: 404 });
 
-  const result: PublicUser = {
+  const result: PublicAccountProfile = {
     id: _result.id,
     username: _result.username,
-    email: _result.email,
-    phone: _result.phone || "",
-    role: _result.role,
-    verified: _result.verified,
-    banned: _result.banned,
     createdAt: _result.createdAt,
     updatedAt: _result.updatedAt,
   };
@@ -73,18 +57,15 @@ export async function getUserQuery({
   return result;
 }
 
-export async function getUsersQuery(): Promise<PublicUser[]> {
-  const _result = await prisma.user.findMany({});
+export async function getAccountProfilesQuery(): Promise<
+  PublicAccountProfile[]
+> {
+  const _result = await prisma.accountProfile.findMany({});
 
-  const result: PublicUser[] = _result.map((user) => {
-    const _user: PublicUser = {
+  const result: PublicAccountProfile[] = _result.map((user) => {
+    const _user: PublicAccountProfile = {
       id: user.id,
       username: user.username,
-      email: user.email,
-      phone: user.phone || "",
-      role: user.role,
-      verified: user.verified,
-      banned: user.banned,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };

@@ -1,7 +1,7 @@
 import { prisma } from "./useServerDatabase";
 
 export async function isEmailAvailable(email: string): Promise<boolean> {
-  const result = await prisma.user.findFirst({
+  const result = await prisma.account.findFirst({
     where: {
       email,
     },
@@ -15,7 +15,7 @@ export async function isEmailAvailable(email: string): Promise<boolean> {
 }
 
 export async function isPhoneAvailable(phone: string): Promise<boolean> {
-  const result = await prisma.user.findFirst({
+  const result = await prisma.account.findFirst({
     where: {
       phone,
     },
@@ -29,7 +29,7 @@ export async function isPhoneAvailable(phone: string): Promise<boolean> {
 }
 
 export async function isUsernameAvailable(username: string): Promise<boolean> {
-  const result = await prisma.user.findFirst({
+  const result = await prisma.accountProfile.findFirst({
     where: {
       username,
     },
