@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { exec } from "child_process";
 import { promisify } from "util";
 import chalk from "chalk";
@@ -46,13 +47,14 @@ async function prepare() {
 
 // Run
 (async () => {
+  console.log(chalk.cyan("> Anomie CLI"));
   const spinner = ora().start();
   spinner.color = "magenta";
-  spinner.spinner = "aesthetic";
-  spinner.text = chalk.yellow(" Cleaning...");
+  spinner.spinner = "arc";
+  spinner.text = chalk.yellow("cleaning...");
 
   await clean();
   await prepare();
 
-  spinner.succeed(chalk.green("Cleaned"));
+  spinner.succeed(chalk.green("clean"));
 })();

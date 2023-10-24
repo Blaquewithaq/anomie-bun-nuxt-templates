@@ -2,10 +2,15 @@
 import * as fs from "fs";
 import * as os from "os";
 import { exec, fork } from "child_process";
+import { promisify } from "util";
 import AdmZip from "adm-zip";
 import fetch from "node-fetch";
 import chalk from "chalk";
 import ora from "ora";
+import { config } from "dotenv";
+config();
+
+const debug = false;
 
 const devDir = ".dev";
 const downloadDir = `${devDir}/stripe`;
@@ -49,11 +54,7 @@ async function getDownloadData(): Promise<DownloadData> {
   const arch = (): string => {
     switch (os.arch()) {
       case "x64":
-        if (platform() === "windows") {
-          return "x86_64";
-        }
-
-        return "amd64";
+        return "x86_64";
       case "arm":
         return "arm";
       case "arm64":
@@ -117,7 +118,7 @@ async function getDownloadData(): Promise<DownloadData> {
   };
 
   const savePath = (): string => {
-    return `${downloadDir}/stripe_cli${fileExtension()}`;
+    return `${downloadDir}/stripe${zipExtension()}`;
   };
 
   return {
@@ -128,125 +129,191 @@ async function getDownloadData(): Promise<DownloadData> {
     latestVersion: await latestVersion(),
     name: await name(),
     url: await downloadUrl(),
-    savePath: await savePath(),
+    savePath: savePath(),
   };
 }
 
-console.log(await getDownloadData());
-
 // Download file from GitHub
-async function download(downloadData: DownloadData) {
-  const spinner = ora(
-    `Downloading ${downloadData.name} from GitHub...`,
-  ).start();
+async function download(downloadData: DownloadData): Promise<boolean> {
+  let spinner;
+
+  if (debug) {
+    spinner = ora(" -- DEBUG: downloading...").start();
+  }
+
+  if (!fs.existsSync(downloadDir)) {
+    fs.mkdirSync(downloadDir);
+  }
 
   try {
     const response = await fetch(downloadData.url);
 
     if (response.ok) {
       const file = fs.createWriteStream(downloadData.savePath);
-      response.body?.pipe(file);
-
-      file.on("finish", () => {
-        file.close();
-        spinner.succeed("stripe downloaded");
+      await new Promise((resolve, reject) => {
+        response.body?.pipe(file);
+        file.on("finish", resolve);
+        file.on("error", reject);
       });
+
+      if (debug && spinner) {
+        spinner.succeed(" -- DEBUG: downloaded");
+      }
+
+      await extractDownload(downloadData);
+      return true;
     } else {
-      spinner.fail(
-        `Failed to download stripe. Status code: ${response.status}`,
-      );
+      if (debug && spinner) {
+        spinner.fail(
+          ` -- DEBUG: failed to download stripe-cli. Status code: ${response.status}`,
+        );
+      }
+      return false;
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    spinner.fail(error.message);
+    if (debug && spinner) {
+      spinner.fail(error.message);
+    }
+    return false;
   }
 }
 
-function extractZip(downloadData: DownloadData) {
-  const zipPath = `${downloadDir}/stripe_cli${downloadData.zipExtension}`;
-  console.log(zipPath);
-  const zip = new AdmZip(zipPath);
-  zip.extractAllTo(downloadDir, true);
-  testProgram(downloadData);
+// Extract download file
+async function extractDownload(downloadData: DownloadData): Promise<boolean> {
+  let spinner;
+
+  if (debug) {
+    spinner = ora(" -- DEBUG: extracting...").start();
+  }
+
+  const downloadPath = `${downloadDir}/stripe${downloadData.zipExtension}`;
+
+  if (downloadData.zipExtension === ".zip") {
+    const zip = new AdmZip(downloadPath);
+    zip.extractAllTo(downloadDir, true);
+  } else if (downloadData.zipExtension === ".tar.gz") {
+    const execAsync = promisify(exec);
+    await execAsync(`tar -xzf ${downloadPath} -C ${downloadDir}`);
+  }
+
+  if (!fs.existsSync(`${downloadDir}/stripe${downloadData.fileExtension}`)) {
+    if (debug && spinner) {
+      spinner.fail(" -- DEBUG: failed to extract");
+    }
+    return false;
+  }
+
+  if (debug && spinner) {
+    spinner.succeed(" -- DEBUG: extracted");
+  }
+  return true;
 }
 
-function testProgram(downloadData: DownloadData) {
-  const spinner = ora("Testing stripe is working...").start();
+async function testProgram(downloadData: DownloadData): Promise<boolean> {
+  let spinner;
+
+  if (debug) {
+    spinner = ora(" -- DEBUG: testing...").start();
+  }
 
   const zipPath = `${downloadDir}/stripe${downloadData.fileExtension}`;
   const cmd = `"${zipPath}" --version`;
 
-  exec(cmd, (error, stdout, stderr) => {
-    if (error) {
+  try {
+    await promisify(exec)(cmd);
+    if (debug && spinner) {
+      spinner.succeed(" -- DEBUG: working");
+    }
+    return true;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (debug && spinner) {
       spinner.fail(error.message);
-      return;
     }
-
-    if (stderr) {
-      spinner.fail(stderr);
-      return;
-    }
-
-    console.log(`stdout: ${stdout}`);
-    spinner.succeed("stripe is working");
-  });
+    return false;
+  }
 }
 
-// Display system and download info
-function displayInfo(downloadData: DownloadData) {
-  console.log(chalk.bold.green("> System Info"));
-  console.log(` - Platform: ${chalk.cyan(os.platform())}`);
-  console.log(` - Arch: ${chalk.cyan(os.arch())}`);
-  console.log(` - File Extension: ${chalk.yellow(downloadData.fileExtension)}`);
+// Auto-login using env variables
+function login(downloadData: DownloadData) {
+  let apiKey;
 
-  console.log(chalk.bold.blue("> Download Info"));
-  console.log(` - Name: ${chalk.yellow(downloadData.name)}`);
-  console.log(` - Version: ${chalk.yellow(downloadData.latestVersion)}`);
-  console.log(` - URL: ${chalk.blue.underline(downloadData.url)}`);
-  console.log(` - Path: ${chalk.green(downloadData.savePath)}`);
-  console.log();
+  if (!process.env.STRIPE_API_KEY) {
+    apiKey = "STRIPE_API_KEY_NOT_SET";
+  } else {
+    apiKey = process.env.STRIPE_API_KEY;
+  }
+
+  const execPath = `${downloadDir}/stripe${downloadData.fileExtension}`;
+  const cmd = `./${execPath} login --api-key ${apiKey}`;
+
+  console.log(
+    "  -- login to the stripe cli (copy/paste command)\n" +
+      chalk.yellowBright(cmd),
+  );
 }
 
 // Install program to the temp directory
 async function install() {
-  if (!fs.existsSync(downloadDir)) {
-    fs.mkdirSync(downloadDir);
+  let spinner;
+
+  if (!debug) {
+    spinner = ora("-- installing stripe-cli...").start();
   }
 
   const downloadData = await getDownloadData();
-  displayInfo(downloadData);
-  const spinner = ora("Checking for stripe...").start();
+
+  if (!fs.existsSync(downloadData.savePath)) {
+    const downloaded = await download(downloadData);
+
+    if (downloaded && (await testProgram(downloadData))) {
+      if (!debug && spinner) {
+        spinner.succeed("-- stripe-cli installed");
+      }
+    } else if (!debug && spinner) {
+      spinner.fail("-- failed to install stripe-cli");
+    }
+  } else if (!debug && spinner) {
+    spinner.succeed("-- stripe-cli already installed");
+  }
 
   if (fs.existsSync(downloadData.savePath)) {
-    spinner.succeed("stripe found");
-  } else {
-    spinner.warn("stripe not found");
-    await download(downloadData);
+    login(downloadData);
   }
 }
 
-export function startWebhook(downloadData: DownloadData) {
+// -----------------------------------
+
+// Start webhook server
+async function startWebhookServer() {
+  const downloadData = await getDownloadData();
   const filePath = `${downloadDir}/stripe${downloadData.fileExtension}`;
-  // const cmd = `"${filePath}" listen --forward-to localhost:54321/functions/v1/`;
 
-  console.log(filePath);
-  fork(filePath, ["listen", "--forward-to", "localhost:54321/functions/v1/"]);
+  fork(filePath, [
+    "listen",
+    "--forward-to",
+    "localhost:3000/api/v1/webhooks/stripe",
+  ]);
 }
 
-// > MAIN ENTRY POINT
-if (process.argv.length > 2) {
-  switch (process.argv[2]) {
-    case "--install":
-      install();
-      break;
-    case "--extract":
-      extractZip(await getDownloadData());
-      break;
-    case "--start-webhooks":
-      startWebhook(await getDownloadData());
-      break;
-    default:
-      console.log("Invalid argument");
-      break;
+// -----------------------------------
+
+// Main entry point
+(async () => {
+  if (process.argv.length > 2) {
+    console.log(chalk.cyan("> Anomie CLI"));
+
+    switch (process.argv[2]) {
+      case "--install":
+        await install();
+        break;
+      case "--start-webhooks":
+        await startWebhookServer();
+        break;
+      default:
+        console.log("Invalid argument");
+        break;
+    }
   }
-}
+})();
