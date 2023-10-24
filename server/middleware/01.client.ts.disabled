@@ -15,7 +15,8 @@ async function protectClientRoute(event: H3Event): Promise<boolean> {
     "/api/v1/app/build",
     "/api/v1/app/target",
     "/api/v1/app/tools",
-    "/api/v1/user",
+    "/api/v1/account",
+    "/api/v1/profile"
   ];
 
   if (
