@@ -38,6 +38,10 @@
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
   },
+  // SQL
+  "[sql]": {
+    "editor.defaultFormatter": "inferrinizzard.prettier-sql-vscode"
+  },
   // Window Settings
   "window.zoomLevel": 0.0,
   // Indent Rainbow Colors
