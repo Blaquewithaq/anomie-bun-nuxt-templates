@@ -1,5 +1,11 @@
 import { expect, describe, it } from "bun:test";
-import { apiUrl, apiVersion, accountId, mockAccount } from "../shared";
+import {
+  apiUrl,
+  apiVersion,
+  accountId,
+  mockAccount,
+  mockAccountTwo,
+} from "../shared";
 
 // Profile
 describe("profile", () => {
@@ -9,12 +15,12 @@ describe("profile", () => {
       {
         method: "POST",
         body: JSON.stringify({
-          username: "updatedUsernameRawr",
+          username: mockAccountTwo.profile?.username,
         }),
       },
     );
 
-    const json = (await response.json()) as PublicAccountProfile;
+    const json = (await response.json()) as AccountProfile;
 
     it("should return 200", () => {
       expect(response.status).toEqual(200);
@@ -26,7 +32,7 @@ describe("profile", () => {
       );
     });
 
-    it("should match type PublicAccountProfile", () => {
+    it("should match type AccountProfile", () => {
       expect(json).toMatchObject({
         id: expect.any(String),
         username: expect.any(String),
@@ -36,7 +42,7 @@ describe("profile", () => {
     });
 
     it("should match mockAccountProfile", () => {
-      expect(json.username).toEqual(mockAccount.username);
+      expect(json.username).toEqual(mockAccount.profile?.username as string);
     });
   });
 
@@ -53,8 +59,8 @@ describe("profile", () => {
       );
     });
 
-    it("should match type PublicAccountProfile", async () => {
-      const json = (await response.json()) as PublicAccountProfile[];
+    it("should match type AccountProfile", async () => {
+      const json = (await response.json()) as AccountProfile[];
 
       json.forEach((item) => {
         expect(item).toMatchObject({
@@ -82,8 +88,8 @@ describe("profile", () => {
       );
     });
 
-    it("should match type PublicAccountProfile", async () => {
-      const json = (await response.json()) as PublicAccountProfile;
+    it("should match type AccountProfile", async () => {
+      const json = (await response.json()) as AccountProfile;
 
       expect(json).toMatchObject({
         id: expect.any(String),

@@ -5,7 +5,7 @@ export default defineEventHandler(async (event: H3Event) => {
 
   return await createStripeCustomer({
     event,
-    userId: body.record.id,
+    accountId: body.record.id,
     name: body.record.id,
     email: body.record.email,
     phone: body.record.phone,

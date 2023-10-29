@@ -9,6 +9,7 @@ import {
   mockTarget,
   mockClient,
   mockAccount,
+  mockAccountTwo,
 } from "../shared";
 
 // App
@@ -648,7 +649,7 @@ describe("app", () => {
         `${apiUrl}/${apiVersion}/app/tools/is-username-available`,
         {
           method: "POST",
-          body: JSON.stringify({ username: mockAccount.username }),
+          body: JSON.stringify({ username: mockAccountTwo.profile?.username }),
         },
       );
 
@@ -666,7 +667,7 @@ describe("app", () => {
           `${apiUrl}/${apiVersion}/app/tools/is-username-available`,
           {
             method: "POST",
-            body: JSON.stringify({ username: "test2" }),
+            body: JSON.stringify({ username: mockAccount.profile?.username }),
           },
         );
         const json = await response.json();

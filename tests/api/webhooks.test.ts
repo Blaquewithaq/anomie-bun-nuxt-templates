@@ -14,9 +14,9 @@ describe("api", () => {
     });
   });
 
-  describe("GET /api/v1/webhooks/stripe/create-customer", async () => {
+  describe("GET /api/v1/webhooks/stripe/customer/create", async () => {
     const response = await fetch(
-      `${apiUrl}/${apiVersion}/webhooks/stripe/create-customer`,
+      `${apiUrl}/${apiVersion}/webhooks/stripe/customer/create`,
       {
         method: "POST",
         body: JSON.stringify({
@@ -34,9 +34,9 @@ describe("api", () => {
     });
   });
 
-  describe("GET /api/v1/webhooks/stripe/update-customer", async () => {
+  describe("GET /api/v1/webhooks/stripe/customer/update", async () => {
     const response = await fetch(
-      `${apiUrl}/${apiVersion}/webhooks/stripe/update-customer`,
+      `${apiUrl}/${apiVersion}/webhooks/stripe/customer/update`,
       {
         method: "POST",
         body: JSON.stringify({
@@ -54,9 +54,9 @@ describe("api", () => {
     });
   });
 
-  describe("GET /api/v1/webhooks/stripe/delete-customer", async () => {
+  describe("GET /api/v1/webhooks/stripe/customer/delete", async () => {
     const response = await fetch(
-      `${apiUrl}/${apiVersion}/webhooks/stripe/delete-customer`,
+      `${apiUrl}/${apiVersion}/webhooks/stripe/customer/delete`,
       {
         method: "POST",
         body: JSON.stringify({

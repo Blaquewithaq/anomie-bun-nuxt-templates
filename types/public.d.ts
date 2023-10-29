@@ -1,9 +1,9 @@
 declare global {
-  type PublicAccountProfile = {
-    id: string;
-    username: string;
-    createdAt: Date;
-    updatedAt: Date;
+  type AccountProfile = {
+    id?: string;
+    username?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
   };
 }
 

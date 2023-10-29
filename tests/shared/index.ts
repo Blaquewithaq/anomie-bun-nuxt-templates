@@ -50,11 +50,31 @@ export const mockClient = {
   },
 };
 
-export const mockAccount = {
+export const mockAccount: Account = {
   email: "test@test.com",
   phone: "1234567890",
-  username: "Test",
+  profile: {
+    username: "Test",
+  },
   role: "tester",
   verified: true,
   banned: true,
+};
+
+export const mockAccountTwo: Account = {
+  email: "test2@test.com",
+  phone: "1234567999",
+  profile: {
+    username: "Test2",
+  },
+  role: "tester",
+  verified: true,
+  banned: false,
+  billing: {
+    stripeId: "cus_test",
+    subscription: {
+      stripeSubscriptionId: "sub_test",
+      productId: "prod_test",
+    },
+  },
 };

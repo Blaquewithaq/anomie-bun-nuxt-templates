@@ -123,8 +123,20 @@ model BillingSubscription {
 }
 
 model Product {
-  id              String @id @unique @default(uuid()) @db.Uuid
-  stripeProductId String @unique @map("stripe_product_id")
+  id                String   @id @unique @default(uuid()) @db.Uuid
+  stripeProductId   String   @unique @map("stripe_product_id")
+  name              String
+  description       String?
+  active            Boolean  @default(false)
+  deleted           Boolean  @default(false)
+  features          String[]
+  imageUrls         String[]
+  price             String
+  currency          String
+  recurringInterval String   @map("recurring_interval")
+  recurringCount    Int      @map("recurring_count")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   @@map("product")
   @@schema("private")

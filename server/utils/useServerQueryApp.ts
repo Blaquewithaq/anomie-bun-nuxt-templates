@@ -527,6 +527,8 @@ export async function createClientQuery({
       online,
       lastOnline,
       disabled,
+      buildId,
+      targetId,
       data: data
         ? {
             create: {
@@ -537,41 +539,13 @@ export async function createClientQuery({
             },
           }
         : undefined,
-      linkClientAndBuild: {
-        create: {
-          build: {
-            connect: {
-              id: buildId,
-            },
-          },
-        },
-      },
-      linkClientAndTarget: {
-        create: {
-          target: {
-            connect: {
-              id: targetId,
-            },
-          },
-        },
-      },
     },
     include: {
       data: true,
-      linkClientAndBuild: {
-        include: {
-          build: true,
-        },
-      },
-      linkClientAndTarget: {
-        include: {
-          target: true,
-        },
-      },
+      build: true,
+      target: true,
     },
   });
-
-  console.log("_resultMe", _result);
 
   const result: AppClient = {
     id: _result.id,
@@ -590,8 +564,8 @@ export async function createClientQuery({
       : undefined,
     createdAt: _result.createdAt,
     updatedAt: _result.updatedAt,
-    build: _result.linkClientAndBuild.map((link) => link.build)[0],
-    target: _result.linkClientAndTarget.map((link) => link.target)[0],
+    build: _result.build,
+    target: _result.target,
   };
 
   return result;
@@ -614,58 +588,6 @@ export async function updateClientQuery({
   buildId: string;
   targetId?: string;
 }) {
-  if (id && buildId) {
-    const link = await prisma.linkClientAndBuild.findFirst({
-      where: {
-        buildId,
-        clientId: id,
-      },
-    });
-
-    if (!link) {
-      await prisma.linkClientAndBuild.create({
-        data: {
-          build: {
-            connect: {
-              id: buildId,
-            },
-          },
-          client: {
-            connect: {
-              id,
-            },
-          },
-        },
-      });
-    }
-  }
-
-  if (id && targetId) {
-    const link = await prisma.linkClientAndTarget.findFirst({
-      where: {
-        targetId,
-        clientId: id,
-      },
-    });
-
-    if (!link) {
-      await prisma.linkClientAndTarget.create({
-        data: {
-          target: {
-            connect: {
-              id: targetId,
-            },
-          },
-          client: {
-            connect: {
-              id,
-            },
-          },
-        },
-      });
-    }
-  }
-
   const _result = await prisma.client.update({
     where: {
       id,
@@ -674,6 +596,8 @@ export async function updateClientQuery({
       online,
       lastOnline,
       disabled,
+      buildId,
+      targetId,
       data: data
         ? {
             update: {
@@ -687,16 +611,8 @@ export async function updateClientQuery({
     },
     include: {
       data: true,
-      linkClientAndBuild: {
-        include: {
-          build: true,
-        },
-      },
-      linkClientAndTarget: {
-        include: {
-          target: true,
-        },
-      },
+      build: true,
+      target: true,
     },
   });
 
@@ -717,8 +633,8 @@ export async function updateClientQuery({
       : undefined,
     createdAt: _result.createdAt,
     updatedAt: _result.updatedAt,
-    build: _result.linkClientAndBuild.map((link) => link.build)[0],
-    target: _result.linkClientAndTarget.map((link) => link.target)[0],
+    build: _result.build,
+    target: _result.target,
   };
 
   return result;
@@ -735,16 +651,8 @@ export async function deleteClientQuery({
     },
     include: {
       data: true,
-      linkClientAndBuild: {
-        include: {
-          build: true,
-        },
-      },
-      linkClientAndTarget: {
-        include: {
-          target: true,
-        },
-      },
+      build: true,
+      target: true,
     },
   });
 
@@ -765,8 +673,8 @@ export async function deleteClientQuery({
       : undefined,
     createdAt: _result.createdAt,
     updatedAt: _result.updatedAt,
-    build: _result.linkClientAndBuild.map((link) => link.build)[0],
-    target: _result.linkClientAndTarget.map((link) => link.target)[0],
+    build: _result.build,
+    target: _result.target,
   };
 
   return result;
@@ -783,16 +691,8 @@ export async function getClientQuery({
     },
     include: {
       data: true,
-      linkClientAndBuild: {
-        include: {
-          build: true,
-        },
-      },
-      linkClientAndTarget: {
-        include: {
-          target: true,
-        },
-      },
+      build: true,
+      target: true,
     },
   });
 
@@ -815,8 +715,8 @@ export async function getClientQuery({
       : undefined,
     createdAt: _result.createdAt,
     updatedAt: _result.updatedAt,
-    build: _result.linkClientAndBuild.map((link) => link.build)[0],
-    target: _result.linkClientAndTarget.map((link) => link.target)[0],
+    build: _result.build,
+    target: _result.target,
   };
 
   return result;
@@ -826,16 +726,8 @@ export async function getClientsQuery(): Promise<AppClient[] | Error> {
   const _result = await prisma.client.findMany({
     include: {
       data: true,
-      linkClientAndBuild: {
-        include: {
-          build: true,
-        },
-      },
-      linkClientAndTarget: {
-        include: {
-          target: true,
-        },
-      },
+      build: true,
+      target: true,
     },
   });
 
@@ -858,8 +750,8 @@ export async function getClientsQuery(): Promise<AppClient[] | Error> {
       : undefined,
     createdAt: client.createdAt,
     updatedAt: client.updatedAt,
-    build: client.linkClientAndBuild.map((link) => link.build)[0],
-    target: client.linkClientAndTarget.map((link) => link.target)[0],
+    build: client.build,
+    target: client.target,
   }));
 
   return result;

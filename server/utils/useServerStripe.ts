@@ -12,7 +12,7 @@ export async function handleStripeWebhook(event: H3Event) {
 
 export async function createStripeCustomer({
   event,
-  userId,
+  accountId,
   description,
   email,
   metadata,
@@ -20,13 +20,13 @@ export async function createStripeCustomer({
   phone,
 }: {
   event: H3Event;
-  userId: string;
+  accountId: string;
   description?: string;
   email?: string;
   metadata?: Record<string, string>;
   name?: string;
   phone?: string;
-}): Promise<PrivateAccountStripe> {
+}): Promise<boolean> {
   const stripe = await useServerStripe(event);
 
   const customer = await stripe.customers.create({
@@ -37,28 +37,32 @@ export async function createStripeCustomer({
     phone,
   });
 
-  const _result = await prisma.accountStripe.update({
+  const _result = await prisma.accountBilling.update({
     where: {
-      id: userId,
+      id: accountId,
     },
     data: {
-      customerId: customer.id,
+      stripeId: customer.id,
     },
   });
 
-  const result: PrivateAccountStripe = {
+  const result: AccountBilling = {
     id: _result.id,
-    customerId: customer.id,
+    stripeId: customer.id,
     createdAt: _result.createdAt,
     updatedAt: _result.updatedAt,
   };
 
-  return result;
+  if (!result) {
+    return false;
+  }
+
+  return true;
 }
 
 export async function updateStripeCustomer({
   event,
-  userId,
+  accountId,
   description,
   email,
   metadata,
@@ -66,26 +70,26 @@ export async function updateStripeCustomer({
   phone,
 }: {
   event: H3Event;
-  userId: string;
+  accountId: string;
   description?: string;
   email?: string;
   metadata?: Record<string, string>;
   name?: string;
   phone?: string;
-}): Promise<PrivateAccountStripe | null> {
+}): Promise<boolean | null> {
   const stripe = await useServerStripe(event);
 
-  const account = await prisma.accountStripe.findUnique({
+  const account = await prisma.accountBilling.findUnique({
     where: {
-      id: userId,
+      id: accountId,
     },
   });
 
-  if (!account?.customerId) {
+  if (!account?.stripeId) {
     return null;
   }
 
-  const customer = await stripe.customers.update(account?.customerId, {
+  const customer = await stripe.customers.update(account?.stripeId, {
     description,
     email,
     metadata,
@@ -93,36 +97,40 @@ export async function updateStripeCustomer({
     phone,
   });
 
-  const result: PrivateAccountStripe = {
+  const result: AccountBilling = {
     id: account.id,
-    customerId: customer.id,
+    stripeId: customer.id,
     createdAt: account.createdAt,
     updatedAt: account.updatedAt,
   };
 
-  return result;
+  if (!result) {
+    return false;
+  }
+
+  return true;
 }
 
 export async function deleteStripeCustomer({
   event,
-  userId,
+  accountId,
 }: {
   event: H3Event;
-  userId: string;
+  accountId: string;
 }): Promise<boolean> {
   const stripe = await useServerStripe(event);
 
-  const account = await prisma.accountStripe.findUnique({
+  const account = await prisma.accountBilling.findUnique({
     where: {
-      id: userId,
+      id: accountId,
     },
   });
 
-  if (!account?.customerId) {
+  if (!account?.stripeId) {
     return false;
   }
 
-  const customer = await stripe.customers.del(account?.customerId);
+  const customer = await stripe.customers.del(account?.stripeId);
 
   if (!customer.deleted) {
     return false;
