@@ -108,7 +108,7 @@ CREATE TABLE "private"."subscription" (
 -- CreateTable
 CREATE TABLE "private"."product" (
     "id" UUID NOT NULL,
-    "stripe_product_id" TEXT NOT NULL,
+    "stripe_product_id" TEXT,
     "name" TEXT NOT NULL,
     "description" TEXT,
     "active" BOOLEAN NOT NULL DEFAULT false,
@@ -172,6 +172,9 @@ CREATE UNIQUE INDEX "billing_id_key" ON "private"."billing"("id");
 CREATE UNIQUE INDEX "billing_stripe_id_key" ON "private"."billing"("stripe_id");
 
 -- CreateIndex
+CREATE INDEX "billing_id_stripe_id_idx" ON "private"."billing"("id", "stripe_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "subscription_id_key" ON "private"."subscription"("id");
 
 -- CreateIndex
@@ -181,10 +184,16 @@ CREATE UNIQUE INDEX "subscription_stripe_subscription_id_key" ON "private"."subs
 CREATE UNIQUE INDEX "subscription_product_id_key" ON "private"."subscription"("product_id");
 
 -- CreateIndex
+CREATE INDEX "subscription_id_stripe_subscription_id_idx" ON "private"."subscription"("id", "stripe_subscription_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "product_id_key" ON "private"."product"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "product_stripe_product_id_key" ON "private"."product"("stripe_product_id");
+
+-- CreateIndex
+CREATE INDEX "product_id_stripe_product_id_idx" ON "private"."product"("id", "stripe_product_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "profile_id_key" ON "public"."profile"("id");
@@ -208,10 +217,10 @@ ALTER TABLE "app"."link_build_and_target" ADD CONSTRAINT "link_build_and_target_
 ALTER TABLE "app"."link_build_and_target" ADD CONSTRAINT "link_build_and_target_target_id_fkey" FOREIGN KEY ("target_id") REFERENCES "app"."target"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "private"."billing" ADD CONSTRAINT "billing_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."account"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE "private"."billing" ADD CONSTRAINT "billing_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "private"."subscription" ADD CONSTRAINT "subscription_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."billing"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "private"."subscription" ADD CONSTRAINT "subscription_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."billing"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "public"."profile" ADD CONSTRAINT "profile_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."account"("id") ON DELETE CASCADE ON UPDATE NO ACTION;

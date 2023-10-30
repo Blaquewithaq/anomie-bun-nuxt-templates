@@ -1,5 +1,4 @@
 import type { H3Event } from "h3";
-import { useServerStripe } from "#stripe/server";
 import { prisma } from "./useServerDatabase";
 
 // Account
@@ -54,7 +53,7 @@ export async function updateAccountQuery({
   const result: Account = {
     id: _result.id,
     email: _result.email,
-    phone: _result.phone || "",
+    phone: _result.phone || undefined,
     role: _result.role,
     verified: _result.verified,
     banned: _result.banned,
@@ -90,7 +89,7 @@ export async function getAccountQuery({
   const result: Account = {
     id: _result.id,
     email: _result.email,
-    phone: _result.phone || "",
+    phone: _result.phone || undefined,
     role: _result.role,
     verified: _result.verified,
     banned: _result.banned,
@@ -115,7 +114,7 @@ export async function getAccountsQuery(): Promise<Account[]> {
     const _user: Account = {
       id: user.id,
       email: user.email,
-      phone: user.phone || "",
+      phone: user.phone || undefined,
       role: user.role,
       verified: user.verified,
       banned: user.banned,
@@ -134,7 +133,6 @@ export async function getAccountsQuery(): Promise<Account[]> {
 // Product
 
 export async function createProductQuery({
-  event,
   name,
   description,
   active,
@@ -156,26 +154,8 @@ export async function createProductQuery({
   recurringInterval: "day" | "week" | "month" | "year";
   recurringCount: number;
 }): Promise<Product> {
-  const stripe = await useServerStripe(event);
-
-  const product = await stripe.products.create({
-    name,
-    description,
-    active,
-    images: imageUrls,
-    default_price_data: {
-      currency,
-      unit_amount: parseFloat(price) * 100,
-      recurring: {
-        interval: recurringInterval,
-        interval_count: recurringCount,
-      },
-    },
-  });
-
   const _result = await prisma.product.create({
     data: {
-      stripeProductId: product.id,
       name,
       description,
       active,
@@ -190,9 +170,9 @@ export async function createProductQuery({
 
   const result: Product = {
     id: _result.id,
-    stripeProductId: _result.stripeProductId,
+    stripeProductId: _result.stripeProductId || undefined,
     name: _result.name,
-    description: _result.description ? _result.description : undefined,
+    description: _result.description || undefined,
     active: _result.active,
     deleted: _result.deleted,
     features: _result.features,
@@ -213,7 +193,6 @@ export async function createProductQuery({
 }
 
 export async function updateProductQuery({
-  event,
   id,
   name,
   description,
@@ -229,8 +208,6 @@ export async function updateProductQuery({
   features?: string[];
   imageUrls?: string[];
 }): Promise<Product> {
-  const stripe = await useServerStripe(event);
-
   const _result = await prisma.product.update({
     where: {
       id,
@@ -244,20 +221,11 @@ export async function updateProductQuery({
     },
   });
 
-  const product = await stripe.products.update(_result.stripeProductId, {
-    name,
-    description,
-    active,
-    images: imageUrls,
-  });
-
-  if (!product) return sendErrorCode({ statusCode: 404 });
-
   const result: Product = {
     id: _result.id,
-    stripeProductId: _result.stripeProductId,
+    stripeProductId: _result.stripeProductId || undefined,
     name: _result.name,
-    description: _result.description ? _result.description : undefined,
+    description: _result.description || undefined,
     active: _result.active,
     deleted: _result.deleted,
     features: _result.features,
@@ -280,7 +248,6 @@ export async function updateProductQuery({
 export async function deleteProductQuery({
   id,
 }: {
-  event: H3Event;
   id: string;
 }): Promise<Product> {
   const _result = await prisma.product.update({
@@ -295,9 +262,9 @@ export async function deleteProductQuery({
 
   const result: Product = {
     id: _result.id,
-    stripeProductId: _result.stripeProductId,
+    stripeProductId: _result.stripeProductId || undefined,
     name: _result.name,
-    description: _result.description ? _result.description : undefined,
+    description: _result.description || undefined,
     active: _result.active,
     deleted: _result.deleted,
     features: _result.features,
@@ -332,9 +299,9 @@ export async function getProductQuery({
 
   const result: Product = {
     id: _result.id,
-    stripeProductId: _result.stripeProductId,
+    stripeProductId: _result.stripeProductId || undefined,
     name: _result.name,
-    description: _result.description ? _result.description : undefined,
+    description: _result.description || undefined,
     active: _result.active,
     deleted: _result.deleted,
     features: _result.features,
@@ -360,9 +327,9 @@ export async function getProductsQuery(): Promise<Product[]> {
   const result: Product[] = _result.map((product) => {
     const _product: Product = {
       id: product.id,
-      stripeProductId: product.stripeProductId,
+      stripeProductId: product.stripeProductId || undefined,
       name: product.name,
-      description: product.description ? product.description : undefined,
+      description: product.description || undefined,
       active: product.active,
       deleted: product.deleted,
       features: product.features,
