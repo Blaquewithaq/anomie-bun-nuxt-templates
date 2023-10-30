@@ -72,14 +72,14 @@ async function main() {
     },
   });
 
-  await prisma.accountProfile.create({
+  await prisma.profile.create({
     data: {
       id: "b7a8a3b0-1f7e-4f1f-8e1c-0f4b9e3d6f8c",
       username: "Test",
     },
   });
 
-  await prisma.accountBilling.create({
+  await prisma.billing.create({
     data: {
       id: "b7a8a3b0-1f7e-4f1f-8e1c-0f4b9e3d6f8c",
       stripeId: null,

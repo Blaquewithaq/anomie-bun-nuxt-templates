@@ -18,7 +18,7 @@ export async function updateAccountQuery({
   role: AccountRole;
   verified: boolean;
   banned: boolean;
-  billing: AccountBilling;
+  billing: Billing;
 }): Promise<Account> {
   const _result = await prisma.account.update({
     where: {

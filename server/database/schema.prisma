@@ -11,6 +11,10 @@ datasource db {
   schemas   = ["app", "private", "public"]
 }
 
+//------------------------------------------------
+// Schema: app
+//------------------------------------------------
+
 model Build {
   id                 String               @id @unique @default(uuid()) @db.Uuid
   codename           String               @unique
@@ -23,6 +27,19 @@ model Build {
   linkBuildAndTarget LinkBuildAndTarget[]
 
   @@map("build")
+  @@schema("app")
+}
+
+enum TargetPlatform {
+  windows
+  macos
+  linux
+  android
+  ios
+  web
+  other
+
+  @@map("target_platform")
   @@schema("app")
 }
 
@@ -82,43 +99,57 @@ model LinkBuildAndTarget {
   @@schema("app")
 }
 
+//------------------------------------------------
+// Schema: private
+//------------------------------------------------
+
+enum AccountRole {
+  admin
+  user
+  beta
+  tester
+
+  @@map("account_role")
+  @@schema("private")
+}
+
 model Account {
-  id        String          @id @unique @db.Uuid
-  email     String          @unique
-  phone     String?         @unique
-  role      AccountRole     @default(user)
-  verified  Boolean         @default(false)
-  banned    Boolean         @default(false)
-  createdAt DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt DateTime        @default(now()) @map("updated_at") @db.Timestamptz(6)
-  billing   AccountBilling?
-  profile   AccountProfile?
+  id        String      @id @unique @db.Uuid
+  email     String      @unique
+  phone     String?     @unique
+  role      AccountRole @default(user)
+  verified  Boolean     @default(false)
+  banned    Boolean     @default(false)
+  profile   Profile?
+  billing   Billing?
+  createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime    @default(now()) @map("updated_at") @db.Timestamptz(6)
 
   @@map("account")
   @@schema("private")
 }
 
-model AccountBilling {
-  id           String               @id @unique @db.Uuid
-  stripeId     String?              @unique @map("stripe_id")
-  createdAt    DateTime             @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt    DateTime             @default(now()) @map("updated_at") @db.Timestamptz(6)
-  account      Account              @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  subscription BillingSubscription?
+model Billing {
+  id           String        @id @unique @db.Uuid
+  stripeId     String?       @unique @map("stripe_id")
+  subscription Subscription?
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime      @default(now()) @map("updated_at") @db.Timestamptz(6)
+  account      Account       @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@map("account_billing")
+  @@map("billing")
   @@schema("private")
 }
 
-model BillingSubscription {
-  id                   String         @id @unique @db.Uuid
-  stripeSubscriptionId String         @unique @map("subscription_id")
-  productId            String         @unique @map("product_id")
-  createdAt            DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt            DateTime       @default(now()) @map("updated_at") @db.Timestamptz(6)
-  billing              AccountBilling @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+model Subscription {
+  id                   String   @id @unique @db.Uuid
+  stripeSubscriptionId String   @unique @map("stripe_subscription_id")
+  productId            String   @unique @map("product_id")
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  billing              Billing  @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@map("billing_subscription")
+  @@map("subscription")
   @@schema("private")
 }
 
@@ -130,7 +161,7 @@ model Product {
   active            Boolean  @default(false)
   deleted           Boolean  @default(false)
   features          String[]
-  imageUrls         String[]
+  imageUrls         String[] @map("image_urls")
   price             String
   currency          String
   recurringInterval String   @map("recurring_interval")
@@ -142,36 +173,17 @@ model Product {
   @@schema("private")
 }
 
-model AccountProfile {
-  id        String   @id @unique @default(uuid()) @db.Uuid
+//------------------------------------------------
+// Schema: public
+//------------------------------------------------
+
+model Profile {
+  id        String   @id @unique @db.Uuid
   username  String   @unique
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
   account   Account  @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@map("account_profile")
+  @@map("profile")
   @@schema("public")
-}
-
-enum TargetPlatform {
-  windows
-  macos
-  linux
-  android
-  ios
-  web
-  other
-
-  @@map("target_platform")
-  @@schema("app")
-}
-
-enum AccountRole {
-  admin
-  user
-  beta
-  tester
-
-  @@map("account_role")
-  @@schema("private")
 }

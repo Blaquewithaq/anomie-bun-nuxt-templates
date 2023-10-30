@@ -37,7 +37,7 @@ export async function createStripeCustomer({
     phone,
   });
 
-  const _result = await prisma.accountBilling.update({
+  const _result = await prisma.billing.update({
     where: {
       id: accountId,
     },
@@ -46,7 +46,7 @@ export async function createStripeCustomer({
     },
   });
 
-  const result: AccountBilling = {
+  const result: Billing = {
     id: _result.id,
     stripeId: customer.id,
     createdAt: _result.createdAt,
@@ -79,7 +79,7 @@ export async function updateStripeCustomer({
 }): Promise<boolean | null> {
   const stripe = await useServerStripe(event);
 
-  const account = await prisma.accountBilling.findUnique({
+  const account = await prisma.billing.findUnique({
     where: {
       id: accountId,
     },
@@ -97,7 +97,7 @@ export async function updateStripeCustomer({
     phone,
   });
 
-  const result: AccountBilling = {
+  const result: Billing = {
     id: account.id,
     stripeId: customer.id,
     createdAt: account.createdAt,
@@ -120,7 +120,7 @@ export async function deleteStripeCustomer({
 }): Promise<boolean> {
   const stripe = await useServerStripe(event);
 
-  const account = await prisma.accountBilling.findUnique({
+  const account = await prisma.billing.findUnique({
     where: {
       id: accountId,
     },

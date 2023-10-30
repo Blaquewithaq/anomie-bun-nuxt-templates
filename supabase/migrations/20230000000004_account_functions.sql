@@ -18,49 +18,49 @@ AFTER INSERT ON auth.users
 FOR EACH ROW EXECUTE PROCEDURE private.generate_new_account();
 
 -- CreateFunction
-CREATE OR REPLACE FUNCTION private.generate_new_account_profile()
+CREATE OR REPLACE FUNCTION private.generate_new_profile()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public."account_profile" (id, username)
+  INSERT INTO public."profile" (id, username)
   VALUES (NEW.id, NEW.raw_user_meta_data->>'username');
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- CreateTrigger
-CREATE OR REPLACE TRIGGER on_auth_user_created_generate_new_account_profile
+CREATE OR REPLACE TRIGGER on_auth_user_created_generate_new_profile
 AFTER INSERT ON auth.users
-FOR EACH ROW EXECUTE PROCEDURE private.generate_new_account_profile();
+FOR EACH ROW EXECUTE PROCEDURE private.generate_new_profile();
 
 -- CreateFunction
-CREATE OR REPLACE FUNCTION private.generate_new_account_billing()
+CREATE OR REPLACE FUNCTION private.generate_new_billing()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO private."account_billing" (id)
+  INSERT INTO private."billing" (id)
   VALUES (NEW.id);
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- CreateTrigger
-CREATE OR REPLACE TRIGGER on_auth_user_created_generate_new_account_billing
+CREATE OR REPLACE TRIGGER on_auth_user_created_generate_new_billing
 AFTER INSERT ON auth.users
-FOR EACH ROW EXECUTE PROCEDURE private.generate_new_account_billing();
+FOR EACH ROW EXECUTE PROCEDURE private.generate_new_billing();
 
 -- CreateFunction
-CREATE OR REPLACE FUNCTION private.generate_new_billing_subscription()
+CREATE OR REPLACE FUNCTION private.generate_new_subscription()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO private."billing_subscription" (id)
+  INSERT INTO private."subscription" (id)
   VALUES (NEW.id);
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- CreateTrigger
-CREATE OR REPLACE TRIGGER on_auth_user_created_generate_new_billing_subscription
+CREATE OR REPLACE TRIGGER on_auth_user_created_generate_new_subscription
 AFTER INSERT ON auth.users
-FOR EACH ROW EXECUTE PROCEDURE private.generate_new_billing_subscription();
+FOR EACH ROW EXECUTE PROCEDURE private.generate_new_subscription();
 
 --------------------------------------------------
 -- Management functions for table: account
@@ -103,7 +103,7 @@ FOR EACH ROW EXECUTE PROCEDURE private.update_account_phone();
 CREATE OR REPLACE FUNCTION private.update_account_username()
 RETURNS TRIGGER AS $$
 BEGIN
-  UPDATE public."account_profile"
+  UPDATE public."profile"
   SET username = NEW.raw_user_meta_data->>'username'
   WHERE id = NEW.id;
   RETURN NEW;

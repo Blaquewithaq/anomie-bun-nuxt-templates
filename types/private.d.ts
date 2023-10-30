@@ -1,14 +1,6 @@
 declare global {
   type AccountRole = "admin" | "user" | "beta" | "tester";
 
-  type AccountBilling = {
-    id?: string;
-    stripeId?: string | null;
-    subscription?: BillingSubscription;
-    createdAt?: Date;
-    updatedAt?: Date;
-  }
-
   type Account = {
     id?: string;
     email?: string;
@@ -16,14 +8,21 @@ declare global {
     role?: AccountRole;
     verified?: boolean;
     banned?: boolean;
-    profile?: AccountProfile;
-    billing?: AccountBilling;
+    profile?: Profile;
+    billing?: Billing;
     createdAt?: Date;
     updatedAt?: Date;
   };
 
+  type Billing = {
+    id?: string;
+    stripeId?: string | null;
+    subscription?: BillingSubscription;
+    createdAt?: Date;
+    updatedAt?: Date;
+  }
 
-  type BillingSubscription = {
+  type Subscription = {
     id?: string;
     stripeSubscriptionId?: string;
     productId?: string;

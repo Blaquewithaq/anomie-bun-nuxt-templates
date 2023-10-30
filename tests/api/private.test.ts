@@ -121,7 +121,7 @@ describe("product", () => {
 
   describe(`POST /api/${apiVersion}/product/:id/update`, async () => {
     const response = await fetch(
-      `${apiUrl}/${apiVersion}/product/5415b2f9-9ccd-41bb-bb5a-39d66a895d77/update`,
+      `${apiUrl}/${apiVersion}/product/a34c857d-02b0-4c7f-8ad0-4bcae0cb2769/update`,
       {
         method: "POST",
         body: JSON.stringify({
@@ -227,7 +227,7 @@ describe("product", () => {
 
   describe(`GET /api/${apiVersion}/product/:id`, async () => {
     const response = await fetch(
-      `${apiUrl}/${apiVersion}/product/5415b2f9-9ccd-41bb-bb5a-39d66a895d77`,
+      `${apiUrl}/${apiVersion}/product/a34c857d-02b0-4c7f-8ad0-4bcae0cb2769`,
     );
 
     const json = (await response.json()) as Product;
@@ -275,7 +275,7 @@ describe("product", () => {
 
   describe(`POST /api/${apiVersion}/product/:id/delete`, async () => {
     const response = await fetch(
-      `${apiUrl}/${apiVersion}/product/5415b2f9-9ccd-41bb-bb5a-39d66a895d77/delete`,
+      `${apiUrl}/${apiVersion}/product/a34c857d-02b0-4c7f-8ad0-4bcae0cb2769/delete`,
       {
         method: "POST",
       },

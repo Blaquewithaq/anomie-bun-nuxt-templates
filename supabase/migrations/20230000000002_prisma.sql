@@ -85,24 +85,24 @@ CREATE TABLE "private"."account" (
 );
 
 -- CreateTable
-CREATE TABLE "private"."account_billing" (
+CREATE TABLE "private"."billing" (
     "id" UUID NOT NULL,
     "stripe_id" TEXT,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "account_billing_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "billing_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "private"."billing_subscription" (
+CREATE TABLE "private"."subscription" (
     "id" UUID NOT NULL,
-    "subscription_id" TEXT NOT NULL,
+    "stripe_subscription_id" TEXT NOT NULL,
     "product_id" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "billing_subscription_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "subscription_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -114,7 +114,7 @@ CREATE TABLE "private"."product" (
     "active" BOOLEAN NOT NULL DEFAULT false,
     "deleted" BOOLEAN NOT NULL DEFAULT false,
     "features" TEXT[],
-    "imageUrls" TEXT[],
+    "image_urls" TEXT[],
     "price" TEXT NOT NULL,
     "currency" TEXT NOT NULL,
     "recurring_interval" TEXT NOT NULL,
@@ -126,13 +126,13 @@ CREATE TABLE "private"."product" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."account_profile" (
+CREATE TABLE "public"."profile" (
     "id" UUID NOT NULL,
     "username" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "account_profile_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "profile_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -166,19 +166,19 @@ CREATE UNIQUE INDEX "account_email_key" ON "private"."account"("email");
 CREATE UNIQUE INDEX "account_phone_key" ON "private"."account"("phone");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "account_billing_id_key" ON "private"."account_billing"("id");
+CREATE UNIQUE INDEX "billing_id_key" ON "private"."billing"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "account_billing_stripe_id_key" ON "private"."account_billing"("stripe_id");
+CREATE UNIQUE INDEX "billing_stripe_id_key" ON "private"."billing"("stripe_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "billing_subscription_id_key" ON "private"."billing_subscription"("id");
+CREATE UNIQUE INDEX "subscription_id_key" ON "private"."subscription"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "billing_subscription_subscription_id_key" ON "private"."billing_subscription"("subscription_id");
+CREATE UNIQUE INDEX "subscription_stripe_subscription_id_key" ON "private"."subscription"("stripe_subscription_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "billing_subscription_product_id_key" ON "private"."billing_subscription"("product_id");
+CREATE UNIQUE INDEX "subscription_product_id_key" ON "private"."subscription"("product_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "product_id_key" ON "private"."product"("id");
@@ -187,10 +187,10 @@ CREATE UNIQUE INDEX "product_id_key" ON "private"."product"("id");
 CREATE UNIQUE INDEX "product_stripe_product_id_key" ON "private"."product"("stripe_product_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "account_profile_id_key" ON "public"."account_profile"("id");
+CREATE UNIQUE INDEX "profile_id_key" ON "public"."profile"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "account_profile_username_key" ON "public"."account_profile"("username");
+CREATE UNIQUE INDEX "profile_username_key" ON "public"."profile"("username");
 
 -- AddForeignKey
 ALTER TABLE "app"."client_data" ADD CONSTRAINT "client_data_id_fkey" FOREIGN KEY ("id") REFERENCES "app"."client"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
@@ -208,10 +208,10 @@ ALTER TABLE "app"."link_build_and_target" ADD CONSTRAINT "link_build_and_target_
 ALTER TABLE "app"."link_build_and_target" ADD CONSTRAINT "link_build_and_target_target_id_fkey" FOREIGN KEY ("target_id") REFERENCES "app"."target"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "private"."account_billing" ADD CONSTRAINT "account_billing_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."account"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE "private"."billing" ADD CONSTRAINT "billing_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."account"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "private"."billing_subscription" ADD CONSTRAINT "billing_subscription_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."account_billing"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE "private"."subscription" ADD CONSTRAINT "subscription_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."billing"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "public"."account_profile" ADD CONSTRAINT "account_profile_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."account"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE "public"."profile" ADD CONSTRAINT "profile_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."account"("id") ON DELETE CASCADE ON UPDATE NO ACTION;

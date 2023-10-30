@@ -36,8 +36,8 @@ BEGIN
     SELECT tableName FROM pg_tables
     WHERE schemaName = 'private' AND tableName IN (
       'account',
-      'account_billing',
-      'billing_subscription',
+      'billing',
+      'subscription',
       'product'
     )
   LOOP
@@ -58,7 +58,7 @@ BEGIN
   FOR table_record IN
     SELECT tableName FROM pg_tables
     WHERE schemaName = 'public' AND tableName IN (
-      'account_profile'
+      'profile'
     )
   LOOP
     EXECUTE 'CREATE TRIGGER on_' || table_record.tableName || '_updated_update_timestamp ' ||

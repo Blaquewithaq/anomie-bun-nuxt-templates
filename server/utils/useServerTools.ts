@@ -29,7 +29,7 @@ export async function isPhoneAvailable(phone: string): Promise<boolean> {
 }
 
 export async function isUsernameAvailable(username: string): Promise<boolean> {
-  const result = await prisma.accountProfile.findFirst({
+  const result = await prisma.profile.findFirst({
     where: {
       username,
     },

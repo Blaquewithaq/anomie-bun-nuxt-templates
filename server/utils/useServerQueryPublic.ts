@@ -11,8 +11,8 @@ export async function updateAccountProfileQuery({
 }: {
   id: string;
   username: string;
-}): Promise<AccountProfile> {
-  const _result = await prisma.accountProfile.update({
+}): Promise<Profile> {
+  const _result = await prisma.profile.update({
     where: {
       id,
     },
@@ -21,7 +21,7 @@ export async function updateAccountProfileQuery({
     },
   });
 
-  const result: AccountProfile = {
+  const result: Profile = {
     id: _result.id,
     username: _result.username,
     createdAt: _result.createdAt,
@@ -38,8 +38,8 @@ export async function getAccountProfileQuery({
   id,
 }: {
   id: string;
-}): Promise<AccountProfile | Error> {
-  const _result = await prisma.accountProfile.findFirst({
+}): Promise<Profile | Error> {
+  const _result = await prisma.profile.findFirst({
     where: {
       id,
     },
@@ -47,7 +47,7 @@ export async function getAccountProfileQuery({
 
   if (!_result) return sendErrorCode({ statusCode: 404 });
 
-  const result: AccountProfile = {
+  const result: Profile = {
     id: _result.id,
     username: _result.username,
     createdAt: _result.createdAt,
@@ -57,11 +57,11 @@ export async function getAccountProfileQuery({
   return result;
 }
 
-export async function getAccountProfilesQuery(): Promise<AccountProfile[]> {
-  const _result = await prisma.accountProfile.findMany({});
+export async function getAccountProfilesQuery(): Promise<Profile[]> {
+  const _result = await prisma.profile.findMany({});
 
-  const result: AccountProfile[] = _result.map((user) => {
-    const _user: AccountProfile = {
+  const result: Profile[] = _result.map((user) => {
+    const _user: Profile = {
       id: user.id,
       username: user.username,
       createdAt: user.createdAt,

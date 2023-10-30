@@ -20,7 +20,7 @@ describe("profile", () => {
       },
     );
 
-    const json = (await response.json()) as AccountProfile;
+    const json = (await response.json()) as Profile;
 
     it("should return 200", () => {
       expect(response.status).toEqual(200);
@@ -32,7 +32,7 @@ describe("profile", () => {
       );
     });
 
-    it("should match type AccountProfile", () => {
+    it("should match type Profile", () => {
       expect(json).toMatchObject({
         id: expect.any(String),
         username: expect.any(String),
@@ -59,8 +59,8 @@ describe("profile", () => {
       );
     });
 
-    it("should match type AccountProfile", async () => {
-      const json = (await response.json()) as AccountProfile[];
+    it("should match type Profile", async () => {
+      const json = (await response.json()) as Profile[];
 
       json.forEach((item) => {
         expect(item).toMatchObject({
@@ -88,8 +88,8 @@ describe("profile", () => {
       );
     });
 
-    it("should match type AccountProfile", async () => {
-      const json = (await response.json()) as AccountProfile;
+    it("should match type Profile", async () => {
+      const json = (await response.json()) as Profile;
 
       expect(json).toMatchObject({
         id: expect.any(String),
