@@ -73,27 +73,45 @@ export async function createStripeCustomer({
     phone,
   });
 
-  const _result = await prisma.billing.update({
-    where: {
-      id: accountId,
-    },
-    data: {
-      stripeId: customer.id,
-    },
-  });
+  let updateSuccessful = false;
+  let retries = 3; // Number of retries before giving up
 
-  const result: Billing = {
-    id: _result.id,
-    stripeId: customer.id,
-    createdAt: _result.createdAt,
-    updatedAt: _result.updatedAt,
-  };
+  while (retries > 0 && !updateSuccessful) {
+    try {
+      const _result = await prisma.billing.update({
+        where: {
+          id: accountId,
+        },
+        data: {
+          stripeId: customer.id,
+        },
+      });
 
-  if (!result) {
-    return false;
+      updateSuccessful = true;
+
+      const result: Billing = {
+        id: _result.id,
+        stripeId: customer.id,
+        createdAt: _result.createdAt,
+        updatedAt: _result.updatedAt,
+      };
+
+      if (!result) {
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      retries--;
+
+      if (retries > 0) {
+        consoleMessageServer("log", `Retrying in 1 second...`);
+        await sleep(1000); // Wait for 1 second before retrying
+      }
+    }
   }
 
-  return true;
+  return false;
 }
 
 export async function updateStripeCustomer({

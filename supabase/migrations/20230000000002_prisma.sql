@@ -97,8 +97,8 @@ CREATE TABLE "private"."billing" (
 -- CreateTable
 CREATE TABLE "private"."subscription" (
     "id" UUID NOT NULL,
-    "stripe_subscription_id" TEXT NOT NULL,
-    "product_id" TEXT NOT NULL,
+    "stripe_subscription_id" TEXT,
+    "product_id" TEXT,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

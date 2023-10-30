@@ -144,7 +144,7 @@ model Billing {
 
 model Subscription {
   id                   String   @id @unique @db.Uuid
-  stripeSubscriptionId String   @unique @map("stripe_subscription_id")
+  stripeSubscriptionId String?  @unique @map("stripe_subscription_id")
   productId            String   @unique @map("product_id")
   createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt            DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
