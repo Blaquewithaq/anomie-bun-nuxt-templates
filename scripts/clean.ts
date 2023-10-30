@@ -22,6 +22,7 @@ const directories: string[] = [
   "dist",
   ".nuxt",
   ".output",
+  ".vercel",
   "node_modules/.cache",
   "node_modules/.vite",
 ];

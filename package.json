@@ -40,6 +40,7 @@
     "supabase:stop": "bunx supabase stop",
     "supabase:restart": "bun supabase:stop && bun timeout && bun supabase:start",
     "supabase:reset": "bunx supabase db reset",
+    "supabase:reset:linked": "bunx supabase db reset --linked",
     "supabase:functions:serve": "bunx supabase functions serve",
     "supabase:types": "bunx supabase gen types typescript --local > types/supabase.d.ts",
     "supabase:inbucket": "start http://localhost:54324",
