@@ -87,6 +87,7 @@ CREATE TABLE "private"."account" (
 -- CreateTable
 CREATE TABLE "private"."billing" (
     "id" UUID NOT NULL,
+    "account_id" UUID,
     "stripe_id" TEXT,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -97,8 +98,9 @@ CREATE TABLE "private"."billing" (
 -- CreateTable
 CREATE TABLE "private"."subscription" (
     "id" UUID NOT NULL,
+    "billing_id" UUID NOT NULL,
     "stripe_subscription_id" TEXT,
-    "product_id" TEXT,
+    "product_id" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -169,13 +171,19 @@ CREATE UNIQUE INDEX "account_phone_key" ON "private"."account"("phone");
 CREATE UNIQUE INDEX "billing_id_key" ON "private"."billing"("id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "billing_account_id_key" ON "private"."billing"("account_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "billing_stripe_id_key" ON "private"."billing"("stripe_id");
 
 -- CreateIndex
-CREATE INDEX "billing_id_stripe_id_idx" ON "private"."billing"("id", "stripe_id");
+CREATE INDEX "billing_account_id_stripe_id_idx" ON "private"."billing"("account_id", "stripe_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "subscription_id_key" ON "private"."subscription"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "subscription_billing_id_key" ON "private"."subscription"("billing_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "subscription_stripe_subscription_id_key" ON "private"."subscription"("stripe_subscription_id");
@@ -184,7 +192,7 @@ CREATE UNIQUE INDEX "subscription_stripe_subscription_id_key" ON "private"."subs
 CREATE UNIQUE INDEX "subscription_product_id_key" ON "private"."subscription"("product_id");
 
 -- CreateIndex
-CREATE INDEX "subscription_id_stripe_subscription_id_idx" ON "private"."subscription"("id", "stripe_subscription_id");
+CREATE INDEX "subscription_billing_id_stripe_subscription_id_idx" ON "private"."subscription"("billing_id", "stripe_subscription_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "product_id_key" ON "private"."product"("id");
@@ -217,10 +225,10 @@ ALTER TABLE "app"."link_build_and_target" ADD CONSTRAINT "link_build_and_target_
 ALTER TABLE "app"."link_build_and_target" ADD CONSTRAINT "link_build_and_target_target_id_fkey" FOREIGN KEY ("target_id") REFERENCES "app"."target"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "private"."billing" ADD CONSTRAINT "billing_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "private"."billing" ADD CONSTRAINT "billing_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "private"."account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
-ALTER TABLE "private"."subscription" ADD CONSTRAINT "subscription_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."billing"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE "private"."subscription" ADD CONSTRAINT "subscription_billing_id_fkey" FOREIGN KEY ("billing_id") REFERENCES "private"."billing"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "public"."profile" ADD CONSTRAINT "profile_id_fkey" FOREIGN KEY ("id") REFERENCES "private"."account"("id") ON DELETE CASCADE ON UPDATE NO ACTION;

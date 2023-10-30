@@ -78,11 +78,9 @@ export async function createStripeCustomer({
 
   while (retries > 0 && !updateSuccessful) {
     try {
-      const _result = await prisma.billing.update({
-        where: {
-          id: accountId,
-        },
+      const _result = await prisma.billing.create({
         data: {
+          accountId,
           stripeId: customer.id,
         },
       });
@@ -106,7 +104,7 @@ export async function createStripeCustomer({
 
       if (retries > 0) {
         consoleMessageServer("log", `Retrying in 1 second...`);
-        await sleep(1000); // Wait for 1 second before retrying
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
   }
@@ -135,7 +133,7 @@ export async function updateStripeCustomer({
 
   const account = await prisma.billing.findUnique({
     where: {
-      id: accountId,
+      accountId,
     },
   });
 
@@ -176,7 +174,7 @@ export async function deleteStripeCustomer({
 
   const account = await prisma.billing.findUnique({
     where: {
-      id: accountId,
+      accountId,
     },
   });
 

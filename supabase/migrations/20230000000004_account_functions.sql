@@ -32,36 +32,6 @@ CREATE OR REPLACE TRIGGER on_auth_user_created_generate_new_profile
 AFTER INSERT ON auth.users
 FOR EACH ROW EXECUTE PROCEDURE private.generate_new_profile();
 
--- CreateFunction
-CREATE OR REPLACE FUNCTION private.generate_new_billing()
-RETURNS TRIGGER AS $$
-BEGIN
-  INSERT INTO private."billing" (id)
-  VALUES (NEW.id);
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- CreateTrigger
-CREATE OR REPLACE TRIGGER on_auth_user_created_generate_new_billing
-AFTER INSERT ON auth.users
-FOR EACH ROW EXECUTE PROCEDURE private.generate_new_billing();
-
--- CreateFunction
-CREATE OR REPLACE FUNCTION private.generate_new_subscription()
-RETURNS TRIGGER AS $$
-BEGIN
-  INSERT INTO private."subscription" (id)
-  VALUES (NEW.id);
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- CreateTrigger
-CREATE OR REPLACE TRIGGER on_auth_user_created_generate_new_subscription
-AFTER INSERT ON auth.users
-FOR EACH ROW EXECUTE PROCEDURE private.generate_new_subscription();
-
 --------------------------------------------------
 -- Management functions for table: account
 --------------------------------------------------
