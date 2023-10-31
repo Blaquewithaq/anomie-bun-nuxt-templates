@@ -80,6 +80,10 @@
     "supabase": "^1.106.1",
     "typescript": "^5.2.2"
   },
+  "overrides": {
+    "@stripe/stripe-js": "2.1.10",
+    "stripe": "14.2.0"
+  },
   "trustedDependencies": [
     "prisma",
     "supabase"

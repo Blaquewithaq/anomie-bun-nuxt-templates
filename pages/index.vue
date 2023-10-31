@@ -2,7 +2,7 @@
   <div>
     <h1>Stripe Test Checkout</h1>
 
-    <CheckOut />
+    <Checkout />
   </div>
 </template>
 
