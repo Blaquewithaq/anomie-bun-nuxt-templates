@@ -3,7 +3,7 @@ import type { H3Event } from "h3";
 export default defineEventHandler(async (event: H3Event) => {
   const isClientAllowed = await protectClientRoute(event);
 
-  consoleMessageServer("log", "[anomie] isClientAllowed", isClientAllowed);
+  serverConsoleMessageDebug("log", "[anomie] isClientAllowed", isClientAllowed);
 
   if (!isClientAllowed) {
     return sendResponseCode({ event, statusCode: 401 });
@@ -15,7 +15,8 @@ async function protectClientRoute(event: H3Event): Promise<boolean> {
     "/api/v1/app/build",
     "/api/v1/app/target",
     "/api/v1/app/tools",
-    "/api/v1/user",
+    "/api/v1/account",
+    "/api/v1/profile",
   ];
 
   if (
@@ -26,7 +27,7 @@ async function protectClientRoute(event: H3Event): Promise<boolean> {
   } else {
     const client = await getAuthClient(event);
 
-    consoleMessageServer("log", "[anomie] clientRecord", client);
+    serverConsoleMessageDebug("log", "[anomie] clientRecord", client);
 
     if (!client) {
       return false;

@@ -86,9 +86,9 @@ const prismaClient = (): PrismaClient<
 
   if (process.env.NODE_ENV === "development") {
     _prisma.$on("query", (event) => {
-      consoleMessageServer("log", "Query: " + event.query);
-      consoleMessageServer("log", "Params: " + event.params);
-      consoleMessageServer("log", "Duration: " + event.duration + "ms");
+      serverConsoleMessageDebug("log", "Query: " + event.query);
+      serverConsoleMessageDebug("log", "Params: " + event.params);
+      serverConsoleMessageDebug("log", "Duration: " + event.duration + "ms");
     });
   }
 

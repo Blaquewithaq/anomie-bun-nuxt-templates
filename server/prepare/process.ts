@@ -9,8 +9,8 @@ export default defineNuxtPrepareHandler(() => {
   const result = schema.safeParse(process.env);
 
   if (!result.success) {
-    // eslint-disable-next-line no-console
-    console.error(
+    serverConsoleMessage(
+      "error",
       `Invalid environment variables:\n${result.error.errors
         .map((issue) => `- ${issue.path}: ${JSON.stringify(issue)}`)
         .join("\n")}`,

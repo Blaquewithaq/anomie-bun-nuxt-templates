@@ -3,7 +3,7 @@ import type { H3Event } from "h3";
 export default defineEventHandler(async (event: H3Event) => {
   const isUserAllowed = await protectUserRoute(event);
 
-  consoleMessageServer("log", "[anomie] isUserAllowed", isUserAllowed);
+  serverConsoleMessageDebug("log", "[anomie] isUserAllowed", isUserAllowed);
 
   if (!isUserAllowed) {
     return sendResponseCode({ event, statusCode: 401 });
@@ -11,7 +11,7 @@ export default defineEventHandler(async (event: H3Event) => {
 });
 
 async function protectUserRoute(event: H3Event): Promise<boolean> {
-  const protectedRoutes = ["/api/v1/user"];
+  const protectedRoutes = ["/api/v1/account"];
 
   if (
     event.path === undefined ||
