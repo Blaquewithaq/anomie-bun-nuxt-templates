@@ -79,10 +79,17 @@ async function main() {
     },
   });
 
-  await prisma.billing.create({
+  await prisma.product.create({
     data: {
-      id: "b7a8a3b0-1f7e-4f1f-8e1c-0f4b9e3d6f8c",
-      stripeId: null,
+      id: "0b7a8a90-1f7e-4f1f-8e1c-0f4b94876f8c",
+      name: "Test",
+      description: "Test",
+      active: true,
+      imageUrls: [],
+      price: "777",
+      currency: "usd",
+      recurringCount: 1,
+      recurringInterval: "month",
     },
   });
 }
