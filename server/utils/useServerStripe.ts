@@ -379,3 +379,39 @@ export async function deleteStripeProduct({
 
   return true;
 }
+
+export async function createStripePaymentIntent({
+  event,
+  productId,
+}: {
+  event: H3Event;
+  productId: string;
+}): Promise<{ clientSecret: string | null }> {
+  const product = await prisma.product.findUnique({
+    where: {
+      id: productId,
+    },
+  });
+
+  if (!product) {
+    throw createError({
+      statusCode: 404,
+      message: `Product not found`,
+    });
+  }
+
+  const stripe = await useServerStripe(event);
+
+  const paymentIntent: Stripe.PaymentIntent =
+    await stripe.paymentIntents.create({
+      amount: parseInt(product.price),
+      currency: product.currency,
+      automatic_payment_methods: {
+        enabled: product.recurringCount > 0,
+      },
+    });
+
+  return {
+    clientSecret: paymentIntent.client_secret,
+  };
+}
