@@ -1,6 +1,9 @@
+import type { DefaultArgs } from "@prisma/client/runtime/library";
 import { PrismaClient } from "@prisma/client";
-import { DefaultArgs } from "@prisma/client/runtime/library";
 
+/**
+ * Represents an instance of the Prisma Client.
+ */
 let _prisma: PrismaClient<
   {
     log: (
@@ -26,6 +29,11 @@ let _prisma: PrismaClient<
   DefaultArgs
 > | null = null;
 
+/**
+ * Initializes and returns the Prisma Client instance.
+ *
+ * @returns An instance of the Prisma Client.
+ */
 const prismaClient = (): PrismaClient<
   {
     log: (
@@ -87,4 +95,7 @@ const prismaClient = (): PrismaClient<
   return _prisma;
 };
 
+/**
+ * Represents the Prisma Client instance.
+ */
 export const prisma = prismaClient();

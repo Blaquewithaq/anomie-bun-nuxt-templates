@@ -1,5 +1,8 @@
 import type { H3Event } from "h3";
 
+/**
+ * An object representing HTTP status codes and their corresponding messages.
+ */
 const statusCodes: { [key: number]: string } = {
   100: "Continue",
   101: "Switching Protocols",
@@ -40,7 +43,7 @@ const statusCodes: { [key: number]: string } = {
   415: "Unsupported Media Type",
   416: "Requested Range Not Satisfiable",
   417: "Expectation Failed",
-  418: "I’m a teapot",
+  418: "I'm a teapot",
   421: "Misdirected Request",
   422: "Unprocessable Entity",
   423: "Locked",
@@ -66,37 +69,81 @@ const statusCodes: { [key: number]: string } = {
   599: "Network Connect Timeout Error",
 };
 
-export function sendResponseCode({
-  event,
-  statusCode,
-}: {
-  event: H3Event;
-  statusCode: number;
-}) {
-  const statusMessage = statusCodes[statusCode];
+/**
+ * Sends a response with the specified status code.
+ *
+ * @param event - The H3Event object.
+ * @param options - An object containing the status code and an optional status message.
+ * @param options.statusCode - The HTTP status code to send.
+ * @param options.statusMessage - Optional. A custom status message to include in the response.
+ * @throws Error if the status code is not found in the statusCodes object.
+ * @returns The result of sending an error with the specified status code and message.
+ */
+export function sendResponseCode(
+  event: H3Event,
+  {
+    statusCode,
+    statusMessage,
+  }: {
+    statusCode: number;
+    statusMessage?: string;
+  },
+): void {
+  const validStatusCodes = Object.keys(statusCodes).map(Number);
 
-  if (!statusMessage) {
+  if (!validStatusCodes.includes(statusCode)) {
     throw new Error(`Invalid status code: ${statusCode}`);
+  }
+
+  let message;
+
+  if (statusMessage) {
+    message = statusMessage;
+  } else {
+    message = statusCodes[statusCode];
   }
 
   return sendError(
     event,
     createError({
       statusCode,
-      statusMessage,
+      message,
     }),
   );
 }
 
-export function sendErrorCode({ statusCode }: { statusCode: number }) {
-  const statusMessage = statusCodes[statusCode];
+/**
+ * Creates an error object with the specified status code and status message.
+ *
+ * @param options - An object containing the status code and an optional status message.
+ * @param options.statusCode - The HTTP status code for the error.
+ * @param options.statusMessage - Optional. A custom status message for the error.
+ * @throws Error if the status code is not found in the statusCodes object.
+ * @returns An object representing the error with the specified status code and status message.
+ */
+export function sendErrorCode({
+  statusCode,
+  statusMessage,
+}: {
+  statusCode: number;
+  statusMessage?: string;
+}): Error {
+  const validStatusCodes = Object.keys(statusCodes).map(Number);
 
-  if (!statusMessage) {
+  if (!validStatusCodes.includes(statusCode)) {
     throw new Error(`Invalid status code: ${statusCode}`);
+  }
+
+  let message;
+
+  if (statusMessage) {
+    message = statusMessage;
+  } else {
+    message = statusCodes[statusCode];
   }
 
   return createError({
     statusCode,
-    statusMessage,
+    message,
   });
 }
