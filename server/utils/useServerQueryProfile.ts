@@ -1,11 +1,9 @@
 import { prisma } from "./useServerDatabase";
 
-// AccountProfile
-
 // Automatically created when auth user is created
-// export async function createAccountProfileQuery() {}
+// export async function createProfileQuery();
 
-export async function updateAccountProfileQuery({
+export async function updateProfileQuery({
   id,
   username,
 }: {
@@ -32,9 +30,9 @@ export async function updateAccountProfileQuery({
 }
 
 // Automatically deleted when auth user is deleted
-// export async function deleteAccountProfileQuery() {}
+// export async function deleteProfileQuery();
 
-export async function getAccountProfileQuery({
+export async function getProfileQuery({
   id,
 }: {
   id: string;
@@ -57,7 +55,7 @@ export async function getAccountProfileQuery({
   return result;
 }
 
-export async function getAccountProfilesQuery(): Promise<Profile[]> {
+export async function getProfilesQuery(): Promise<Profile[]> {
   const _result = await prisma.profile.findMany({});
 
   const result: Profile[] = _result.map((user) => {

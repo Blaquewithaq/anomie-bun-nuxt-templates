@@ -9,7 +9,7 @@ export default defineEventHandler(async (event: H3Event) => {
     name: body.record.id,
     description: body.record.email,
     active: body.record.active,
-    features: body.record.features,
+    // features: body.record.features,
     imageUrls: body.record.imageUrls,
     price: body.record.price,
     currency: body.record.currency,

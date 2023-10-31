@@ -9,7 +9,6 @@ declare global {
     verified?: boolean;
     banned?: boolean;
     profile?: Profile;
-    billing?: Billing;
     createdAt?: Date;
     updatedAt?: Date;
   };

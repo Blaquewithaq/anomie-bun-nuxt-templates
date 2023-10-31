@@ -8,8 +8,12 @@ export default defineEventHandler(async (event: H3Event) => {
     return sendResponseCode({ event, statusCode: 400 });
   }
 
-  return await updateProfileQuery({
+  return await updateBillingsQuery({
     id,
-    username: body.username,
+    codename: body.codename,
+    changelog: body.changelog,
+    buildDate: body.buildDate,
+    version: body.version,
+    targetIds: body.targetIds,
   });
 });

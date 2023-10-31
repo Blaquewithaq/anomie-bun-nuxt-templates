@@ -87,8 +87,8 @@ CREATE TABLE "private"."account" (
 -- CreateTable
 CREATE TABLE "private"."billing" (
     "id" UUID NOT NULL,
-    "account_id" UUID,
-    "stripe_id" TEXT,
+    "account_id" UUID NOT NULL,
+    "stripe_id" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -99,7 +99,7 @@ CREATE TABLE "private"."billing" (
 CREATE TABLE "private"."subscription" (
     "id" UUID NOT NULL,
     "billing_id" UUID NOT NULL,
-    "stripe_subscription_id" TEXT,
+    "stripe_subscription_id" TEXT NOT NULL,
     "product_id" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -223,9 +223,6 @@ ALTER TABLE "app"."link_build_and_target" ADD CONSTRAINT "link_build_and_target_
 
 -- AddForeignKey
 ALTER TABLE "app"."link_build_and_target" ADD CONSTRAINT "link_build_and_target_target_id_fkey" FOREIGN KEY ("target_id") REFERENCES "app"."target"("id") ON DELETE CASCADE ON UPDATE NO ACTION;
-
--- AddForeignKey
-ALTER TABLE "private"."billing" ADD CONSTRAINT "billing_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "private"."account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "private"."subscription" ADD CONSTRAINT "subscription_billing_id_fkey" FOREIGN KEY ("billing_id") REFERENCES "private"."billing"("id") ON DELETE CASCADE ON UPDATE NO ACTION;

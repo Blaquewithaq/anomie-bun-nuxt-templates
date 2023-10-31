@@ -121,7 +121,6 @@ model Account {
   verified  Boolean     @default(false)
   banned    Boolean     @default(false)
   profile   Profile?
-  billing   Billing?
   createdAt DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime    @default(now()) @map("updated_at") @db.Timestamptz(6)
 
@@ -131,12 +130,11 @@ model Account {
 
 model Billing {
   id           String        @id @unique @default(uuid()) @db.Uuid
-  accountId    String?       @unique @map("account_id") @db.Uuid
-  stripeId     String?       @unique @map("stripe_id")
+  accountId    String        @unique @map("account_id") @db.Uuid
+  stripeId     String        @unique @map("stripe_id")
   subscription Subscription?
   createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime      @default(now()) @map("updated_at") @db.Timestamptz(6)
-  account      Account?      @relation(fields: [accountId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([accountId, stripeId])
   @@map("billing")
@@ -146,7 +144,7 @@ model Billing {
 model Subscription {
   id                   String   @id @unique @default(uuid()) @db.Uuid
   billingId            String   @unique @map("billing_id") @db.Uuid
-  stripeSubscriptionId String?  @unique @map("stripe_subscription_id")
+  stripeSubscriptionId String   @unique @map("stripe_subscription_id")
   productId            String   @unique @map("product_id")
   createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt            DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
