@@ -12,18 +12,16 @@ export default defineEventHandler(async (event: H3Event) => {
   }
 
   const schema = z.object({
-    name: z.string().optional(),
-    description: z.string().optional(),
-    platform: z.string().optional(),
-    buildIds: z.array(z.string()).optional(),
+    role: z.string().optional(),
+    verified: z.boolean().optional(),
+    banned: z.boolean().optional(),
   });
 
   const body = await readValidatedBody(event, schema.parse);
 
-  return await updateTargetQuery(id, {
-    name: body.name,
-    description: body.description,
-    platform: body.platform as AppTargetPlatform,
-    buildIds: body.buildIds,
+  return await updateAccountQuery(id, {
+    role: body.role as AccountRole,
+    verified: body.verified,
+    banned: body.banned,
   });
 });

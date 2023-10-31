@@ -127,10 +127,10 @@ export async function updateBuildQuery(
     version,
     targetIds,
   }: {
-    codename: string;
-    changelog: string;
-    buildDate: string;
-    version: string;
+    codename?: string;
+    changelog?: string;
+    buildDate?: string;
+    version?: string;
     targetIds?: string[];
   },
 ): Promise<AppBuild | Error> {

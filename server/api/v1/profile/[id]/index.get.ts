@@ -10,5 +10,5 @@ export default defineEventHandler(async (event: H3Event) => {
     });
   }
 
-  return await getClientQuery(id);
+  return await getProfileQuery(id);
 });

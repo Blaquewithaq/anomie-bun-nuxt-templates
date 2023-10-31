@@ -177,11 +177,7 @@ export async function updateClientQuery(
  * @param id - The ID of the client to delete.
  * @returns A Promise that resolves to a success message or an Error.
  */
-export async function deleteClientQuery({
-  id,
-}: {
-  id: string;
-}): Promise<string | Error> {
+export async function deleteClientQuery(id: string): Promise<string | Error> {
   try {
     const _result = await prisma.client.delete({
       where: {

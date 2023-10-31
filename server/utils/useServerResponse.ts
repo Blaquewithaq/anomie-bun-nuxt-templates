@@ -107,7 +107,7 @@ export function sendResponseCode(
     event,
     createError({
       statusCode,
-      message,
+      statusMessage: message,
     }),
   );
 }
@@ -144,6 +144,6 @@ export function sendErrorCode({
 
   return createError({
     statusCode,
-    message,
+    statusMessage: message,
   });
 }

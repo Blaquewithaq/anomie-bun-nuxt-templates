@@ -1,4 +1,11 @@
 import { PrismaClient } from "@prisma/client";
+import { buildId, targetId, clientId, accountId } from "~/tests/shared";
+import {
+  buildMock,
+  targetMock,
+  clientMock,
+  accountMock,
+} from "~/tests/shared/mock";
 
 const prisma = new PrismaClient({
   log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
@@ -8,20 +15,20 @@ const prisma = new PrismaClient({
 async function main() {
   const build = await prisma.build.create({
     data: {
-      id: "af1e214e-6491-4b1b-b88f-0073278fa3fb",
-      codename: "AlphaZero",
-      changelog: "http://example.com/changelog/4523l",
-      buildDate: new Date().toISOString(),
-      version: "0.0.1",
+      id: buildId,
+      codename: buildMock.codename,
+      changelog: buildMock.changelog,
+      buildDate: buildMock.buildDate,
+      version: buildMock.version,
     },
   });
 
   const target = await prisma.target.create({
     data: {
-      id: "8291d6d5-6aea-41a8-91f9-b227f4163799",
-      name: "web-browser",
-      description: "Target: Web Browser",
-      platform: "web",
+      id: targetId,
+      name: targetMock.name,
+      description: targetMock.description,
+      platform: targetMock.platform as AppTargetPlatform,
     },
   });
 
@@ -42,19 +49,17 @@ async function main() {
 
   await prisma.client.create({
     data: {
-      id: "d2f5c1c2-0c2d-4d5d-9a1b-1d4f5d2c0c2d",
-      online: true,
-      lastOnline: new Date().toISOString(),
-      disabled: false,
+      id: clientId,
+      online: clientMock.online,
+      lastOnline: clientMock.lastOnline,
+      disabled: clientMock.disabled,
       buildId: build.id,
       targetId: target.id,
       data: {
         create: {
-          browserPropertiesAllowCollect: true,
-          browserProperties: {
-            userAgent:
-              "Mozilla/5.0 (Linux; Android 10; SM-G960F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Mobile Safari/537.36",
-          },
+          browserPropertiesAllowCollect:
+            clientMock.data.browserPropertiesAllowCollect,
+          browserProperties: clientMock.data.browserProperties,
         },
       },
     },
@@ -62,19 +67,19 @@ async function main() {
 
   await prisma.account.create({
     data: {
-      id: "b7a8a3b0-1f7e-4f1f-8e1c-0f4b9e3d6f8c",
-      email: "test@test.com",
-      phone: "1234567890",
-      role: "user",
-      verified: true,
-      banned: false,
+      id: accountId,
+      email: accountMock.email,
+      phone: accountMock.phone,
+      role: accountMock.role as AccountRole,
+      verified: accountMock.verified,
+      banned: accountMock.banned,
     },
   });
 
   await prisma.profile.create({
     data: {
-      id: "b7a8a3b0-1f7e-4f1f-8e1c-0f4b9e3d6f8c",
-      username: "Test",
+      id: accountId,
+      username: accountMock.username,
     },
   });
 }
@@ -84,7 +89,8 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (error) => {
-    serverConsoleMessage("error", "seed.ts:", error);
+    // eslint-disable-next-line no-console
+    console.log("seed.ts:", error);
 
     await prisma.$disconnect();
 

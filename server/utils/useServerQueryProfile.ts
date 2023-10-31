@@ -48,7 +48,7 @@ export async function updateProfileQuery(
   {
     username,
   }: {
-    username: string;
+    username?: string;
   },
 ): Promise<Profile | Error> {
   try {

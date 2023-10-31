@@ -1,11 +1,20 @@
 import type { H3Event } from "h3";
+import { z } from "zod";
 
 export default defineEventHandler(async (event: H3Event) => {
-  const body = await readBody(event);
+  const schema = z.object({
+    online: z.boolean(),
+    lastOnline: z.string(),
+    disabled: z.boolean(),
+    data: z.object({
+      browserPropertiesAllowCollect: z.boolean().optional(),
+      browserProperties: z.string().optional(),
+    }),
+    buildId: z.string(),
+    targetId: z.string(),
+  });
 
-  if (!body) {
-    return sendResponseCode({ event, statusCode: 400 });
-  }
+  const body = await readValidatedBody(event, schema.parse);
 
   return await createClientQuery({
     online: body.online,

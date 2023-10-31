@@ -42,6 +42,9 @@
   "[sql]": {
     "editor.defaultFormatter": "inferrinizzard.prettier-sql-vscode"
   },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
   // Window Settings
   "window.zoomLevel": 0.0,
   // Indent Rainbow Colors

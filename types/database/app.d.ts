@@ -23,11 +23,11 @@ declare global {
   };
 
   type AppClientData = {
-    id: string;
+    id?: string;
     browserPropertiesAllowCollect?: boolean;
     browserProperties?: string | null;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
   };
 
   type AppClient = {
@@ -43,4 +43,4 @@ declare global {
   };
 }
 
-export {};
+export { };

@@ -4,8 +4,11 @@ export default defineEventHandler(async (event: H3Event) => {
   const { id } = getRouterParams(event);
 
   if (!id) {
-    return sendResponseCode({ event, statusCode: 400 });
+    return sendResponseCode(event, {
+      statusCode: 400,
+      statusMessage: "Missing: id",
+    });
   }
 
-  return await getBuildQuery({ id });
+  return await getBuildQuery(id);
 });

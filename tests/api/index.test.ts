@@ -1,8 +1,6 @@
 import type { H3Error } from "h3";
 import { expect, describe, it } from "bun:test";
-import { apiUrl } from "../shared";
-
-// General
+import { apiUrl } from "~/tests/shared";
 
 describe("api", () => {
   describe("GET /api/health", async () => {
@@ -25,7 +23,7 @@ describe("api", () => {
       expect(response.status).toEqual(404);
     });
 
-    it("should return error", async () => {
+    it('should return "Not Found"', async () => {
       const json = (await response.json()) as H3Error;
       expect(json.statusMessage).toEqual("Not Found");
     });
