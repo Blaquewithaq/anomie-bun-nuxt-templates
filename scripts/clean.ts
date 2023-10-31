@@ -22,6 +22,7 @@ const directories: string[] = [
   "dist",
   ".nuxt",
   ".output",
+  ".vercel",
   "node_modules/.cache",
   "node_modules/.vite",
 ];
@@ -54,7 +55,10 @@ async function prepare() {
   spinner.text = chalk.yellow("cleaning...");
 
   await clean();
-  await prepare();
+
+  if (!full) {
+    await prepare();
+  }
 
   spinner.succeed(chalk.green("clean"));
 })();

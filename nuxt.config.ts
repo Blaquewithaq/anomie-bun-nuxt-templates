@@ -59,7 +59,7 @@ export default defineNuxtConfig({
         autoRefreshToken: true,
       },
     },
-    cookieName: "av",
+    cookieName: "anomie",
     cookieOptions: {
       maxAge: cookieSettings.maxAge,
       sameSite: cookieSettings.sameSite,

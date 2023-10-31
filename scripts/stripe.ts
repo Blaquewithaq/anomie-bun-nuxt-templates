@@ -7,8 +7,6 @@ import AdmZip from "adm-zip";
 import fetch from "node-fetch";
 import chalk from "chalk";
 import ora from "ora";
-import { config } from "dotenv";
-config();
 
 const debug = false;
 
