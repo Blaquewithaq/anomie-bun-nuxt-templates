@@ -1,6 +1,7 @@
 import { expect, describe, it } from "bun:test";
 import { apiUrl, apiVersion } from "~/tests/shared";
 import { accountMock } from "~/tests/shared/mock";
+import { useAuthHeader } from "~/tests/shared/helpers";
 
 describe("api", () => {
   describe("app", () => {
@@ -11,6 +12,7 @@ describe("api", () => {
           {
             method: "POST",
             body: JSON.stringify({ email: accountMock.email }),
+            headers: useAuthHeader(),
           },
         );
 
@@ -29,6 +31,7 @@ describe("api", () => {
             {
               method: "POST",
               body: JSON.stringify({ email: "test2@test.com" }),
+              headers: useAuthHeader(),
             },
           );
 
@@ -43,6 +46,7 @@ describe("api", () => {
           {
             method: "POST",
             body: JSON.stringify({ phone: accountMock.phone }),
+            headers: useAuthHeader(),
           },
         );
 
@@ -61,6 +65,7 @@ describe("api", () => {
             {
               method: "POST",
               body: JSON.stringify({ phone: "0987654321" }),
+              headers: useAuthHeader(),
             },
           );
           const json = await response.json();
@@ -74,6 +79,7 @@ describe("api", () => {
           {
             method: "POST",
             body: JSON.stringify({ username: accountMock.username }),
+            headers: useAuthHeader(),
           },
         );
 
@@ -92,6 +98,7 @@ describe("api", () => {
             {
               method: "POST",
               body: JSON.stringify({ username: "test2" }),
+              headers: useAuthHeader(),
             },
           );
           const json = await response.json();

@@ -1,6 +1,7 @@
 import { expect, describe, it } from "bun:test";
 import { apiUrl, apiVersion, targetId } from "~/tests/shared";
 import { targetMock } from "~/tests/shared/mock";
+import { useAuthHeader } from "~/tests/shared/helpers";
 
 describe("api", () => {
   describe("app", () => {
@@ -15,6 +16,7 @@ describe("api", () => {
               description: targetMock.description,
               platform: targetMock.platform,
             }),
+            headers: useAuthHeader(),
           },
         );
 
@@ -53,6 +55,7 @@ describe("api", () => {
               description: targetMock.description + "-updated",
               platform: targetMock.platform,
             }),
+            headers: useAuthHeader(),
           },
         );
 
@@ -90,7 +93,9 @@ describe("api", () => {
       });
 
       describe(`GET /api/${apiVersion}/app/target`, async () => {
-        const response = await fetch(`${apiUrl}/${apiVersion}/app/target`);
+        const response = await fetch(`${apiUrl}/${apiVersion}/app/target`, {
+          headers: useAuthHeader(),
+        });
 
         it("should return 200", () => {
           expect(response.status).toEqual(200);
@@ -122,6 +127,9 @@ describe("api", () => {
       describe(`GET /api/${apiVersion}/app/target/:id`, async () => {
         const response = await fetch(
           `${apiUrl}/${apiVersion}/app/target/${targetId}`,
+          {
+            headers: useAuthHeader(),
+          },
         );
 
         it("should return 200", () => {
@@ -159,6 +167,7 @@ describe("api", () => {
               description: targetMock.description + "-delete",
               platform: targetMock.platform,
             }),
+            headers: useAuthHeader(),
           },
         );
 
@@ -169,6 +178,7 @@ describe("api", () => {
           `${apiUrl}/${apiVersion}/app/target/${targetId}/delete`,
           {
             method: "POST",
+            headers: useAuthHeader(),
           },
         );
 

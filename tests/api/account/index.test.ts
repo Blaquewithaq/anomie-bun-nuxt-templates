@@ -1,6 +1,7 @@
 import { expect, describe, it } from "bun:test";
 import { apiUrl, apiVersion, accountId } from "~/tests/shared";
 import { accountMock } from "~/tests/shared/mock";
+import { useAuthHeader } from "~/tests/shared/helpers";
 
 describe("api", () => {
   describe("account", () => {
@@ -14,6 +15,7 @@ describe("api", () => {
             verified: accountMock.verified,
             banned: accountMock.banned,
           }),
+          headers: useAuthHeader(),
         },
       );
 

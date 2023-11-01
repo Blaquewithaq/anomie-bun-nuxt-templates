@@ -1,4 +1,3 @@
-// Mock Data
 export const buildMock = {
   codename: "testBuild",
   changelog: "test-changelog",

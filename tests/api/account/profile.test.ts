@@ -1,6 +1,7 @@
 import { expect, describe, it } from "bun:test";
 import { apiUrl, apiVersion, accountId } from "~/tests/shared";
 import { accountMock } from "~/tests/shared/mock";
+import { useAuthHeader } from "~/tests/shared/helpers";
 
 describe("api", () => {
   describe("account", () => {
@@ -13,6 +14,7 @@ describe("api", () => {
             body: JSON.stringify({
               username: accountMock.username,
             }),
+            headers: useAuthHeader(),
           },
         );
 
@@ -45,6 +47,9 @@ describe("api", () => {
       describe(`GET /api/${apiVersion}/account/:id/profile`, async () => {
         const response = await fetch(
           `${apiUrl}/${apiVersion}/account/${accountId}/profile`,
+          {
+            headers: useAuthHeader(),
+          },
         );
 
         const json = (await response.json()) as Profile;

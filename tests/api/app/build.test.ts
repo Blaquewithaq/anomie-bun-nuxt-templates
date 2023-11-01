@@ -1,6 +1,7 @@
 import { expect, describe, it } from "bun:test";
 import { apiUrl, apiVersion, buildId } from "~/tests/shared";
 import { buildMock } from "~/tests/shared/mock";
+import { useAuthHeader } from "~/tests/shared/helpers";
 
 describe("api", () => {
   describe("app", () => {
@@ -16,6 +17,7 @@ describe("api", () => {
               buildDate: buildMock.buildDate,
               version: buildMock.version,
             }),
+            headers: useAuthHeader(),
           },
         );
 
@@ -56,6 +58,7 @@ describe("api", () => {
               buildDate: buildMock.buildDate + "-updated",
               version: buildMock.version + "-updated",
             }),
+            headers: useAuthHeader(),
           },
         );
 
@@ -93,7 +96,9 @@ describe("api", () => {
       });
 
       describe(`GET /api/${apiVersion}/app/build`, async () => {
-        const response = await fetch(`${apiUrl}/${apiVersion}/app/build`);
+        const response = await fetch(`${apiUrl}/${apiVersion}/app/build`, {
+          headers: useAuthHeader(),
+        });
 
         it("should return 200", () => {
           expect(response.status).toEqual(200);
@@ -126,6 +131,9 @@ describe("api", () => {
       describe(`GET /api/${apiVersion}/app/build/:id`, async () => {
         const response = await fetch(
           `${apiUrl}/${apiVersion}/app/build/${buildId}`,
+          {
+            headers: useAuthHeader(),
+          },
         );
 
         it("should return 200", () => {
@@ -165,6 +173,7 @@ describe("api", () => {
               buildDate: buildMock.buildDate + "-delete",
               version: buildMock.version + "-delete",
             }),
+            headers: useAuthHeader(),
           },
         );
 
@@ -175,6 +184,7 @@ describe("api", () => {
           `${apiUrl}/${apiVersion}/app/build/${buildId}/delete`,
           {
             method: "POST",
+            headers: useAuthHeader(),
           },
         );
 
